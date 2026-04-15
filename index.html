@@ -714,7 +714,7 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -729,7 +729,8 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
     return parsed;
   } catch (e) {
     console.error('Translation error:', e);
-    return null;
+    // Return a special object so loadTrans can show what went wrong
+    return { _error: e.toString() };
   }
 }
 
@@ -751,8 +752,11 @@ async function loadTrans(idiom, meaning, panelId) {
   const result = await fetchTranslation(idiom, meaning, currentLang);
   const livePanel = document.getElementById(panelId);
   if (!livePanel) return;
-  if (!result) {
-    livePanel.innerHTML = `<div class="trans-lang">${currentLang}</div><div class="trans-note">Translation unavailable.</div>`;
+  if (!result || result._error) {
+    const errMsg = result?._error
+      ? `<div class="trans-note" style="font-size:0.75rem;color:#c0392b">Error: ${result._error}</div>`
+      : `<div class="trans-note">Translation unavailable.</div>`;
+    livePanel.innerHTML = `<div class="trans-lang">${currentLang}</div>${errMsg}`;
     return;
   }
   // equiv may come back as the string "null" — treat that as no equivalent
