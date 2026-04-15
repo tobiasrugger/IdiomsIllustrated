@@ -760,8 +760,11 @@ async function loadTrans(idiom, meaning, panelId) {
     return;
   }
   // equiv may come back as the string "null" — treat that as no equivalent
+  // DEBUG: show raw result so we can see what the API returned
+  const debugStr = JSON.stringify(result);
   const hasEquiv = result.equiv && result.equiv !== 'null' && result.equiv.trim().length > 0;
   let h = `<div class="trans-lang">${currentLang}</div>`;
+  h += `<div style="font-size:0.7rem;color:#999;word-break:break-all;margin-bottom:6px">DEBUG: ${debugStr}</div>`;
   if (hasEquiv) {
     h += `<div class="trans-equiv">${result.equiv}</div>`;
   } else {
