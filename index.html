@@ -720,11 +720,16 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
       })
     });
     const data = await resp.json();
-    const text = data.content?.[0]?.text || '{}';
-    console.log('Translation raw response for', idiom, ':', text);
+    // If the API returned an error, surface it
+    if (data.error) {
+      return { _error: data.error.message || JSON.stringify(data.error) };
+    }
+    const text = data.content?.[0]?.text;
+    if (!text) {
+      return { _error: 'Empty response from API. Full response: ' + JSON.stringify(data).slice(0, 200) };
+    }
     const clean = text.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
-    console.log('Translation parsed:', parsed);
     transCache[key] = parsed;
     return parsed;
   } catch (e) {
@@ -760,11 +765,8 @@ async function loadTrans(idiom, meaning, panelId) {
     return;
   }
   // equiv may come back as the string "null" — treat that as no equivalent
-  // DEBUG: show raw result so we can see what the API returned
-  const debugStr = JSON.stringify(result);
   const hasEquiv = result.equiv && result.equiv !== 'null' && result.equiv.trim().length > 0;
   let h = `<div class="trans-lang">${currentLang}</div>`;
-  h += `<div style="font-size:0.7rem;color:#999;word-break:break-all;margin-bottom:6px">DEBUG: ${debugStr}</div>`;
   if (hasEquiv) {
     h += `<div class="trans-equiv">${result.equiv}</div>`;
   } else {
