@@ -126,51 +126,6 @@ header { background: var(--ink); padding: 20px 28px; display:flex; align-items:c
 @media(max-width:600px){ .sidebar{width:180px} .main{padding:18px 14px} .match-layout{gap:8px} }
 
 
-
-/* LANGUAGE SELECTOR */
-header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.lang-selector { display: flex; flex-direction: column; }
-.lang-selector select {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem;
-  font-weight: 600;
-  padding: 7px 12px;
-  border-radius: 8px;
-  border: 2px solid #3d3240;
-  background: #2a2030;
-  color: var(--paper);
-  cursor: pointer;
-  outline: none;
-  min-width: 180px;
-}
-.lang-selector select:focus { border-color: var(--accent); }
-
-/* TRANSLATION PANEL */
-.trans-panel {
-  margin-top: 10px;
-  padding: 12px 16px;
-  background: var(--warm);
-  border-radius: 10px;
-  border-left: 4px solid var(--accent4);
-  font-size: 0.88rem;
-  line-height: 1.6;
-  color: var(--ink);
-  display: none;
-}
-.trans-panel.visible { display: block; }
-.trans-panel .trans-loading {
-  color: var(--muted);
-  font-style: italic;
-  display: flex; align-items: center; gap: 8px;
-}
-.trans-lang { font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 1px; color: var(--accent4); margin-bottom: 4px; }
-.trans-equiv { font-weight: 700; font-size: 1rem; color: var(--ink); }
-.trans-meaning { color: var(--muted); margin-top: 2px; }
-.trans-note { margin-top: 4px; font-style: italic; color: var(--muted); font-size: 0.82rem; }
-.spin { display: inline-block; animation: spin 1s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
 /* SPEAKER ICON — floats next to idiom title, outside card */
 .idiom-header {
   display: flex;
@@ -259,6 +214,29 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .tip:hover::after, .tip:hover::before,
 .tip:focus::after, .tip:focus::before,
 .tip.tapped::after, .tip.tapped::before { opacity: 1; }
+
+
+/* LANGUAGE SELECTOR */
+header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.lang-selector { display: flex; flex-direction: column; }
+.lang-selector select {
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
+  padding: 7px 12px; border-radius: 8px; border: 2px solid #3d3240;
+  background: #2a2030; color: var(--paper); cursor: pointer; outline: none; min-width: 180px;
+}
+.lang-selector select:focus { border-color: var(--accent); }
+.trans-panel {
+  margin-top: 10px; padding: 12px 16px; background: var(--warm);
+  border-radius: 10px; border-left: 4px solid var(--accent4);
+  font-size: 0.88rem; line-height: 1.6; color: var(--ink); display: none;
+}
+.trans-panel.visible { display: block; }
+.trans-lang { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent4); margin-bottom: 4px; }
+.trans-equiv { font-weight: 700; font-size: 1rem; color: var(--ink); }
+.trans-meaning { color: var(--muted); margin-top: 2px; }
+.trans-note { margin-top: 4px; font-style: italic; color: var(--muted); font-size: 0.82rem; }
+.spin { display: inline-block; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
 </style>
 </head>
@@ -673,83 +651,38 @@ function esc(s){ return s.replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/"/g
 function speak(text){ if(!window.speechSynthesis)return; const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=0.82; window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }
 
 
-// ═══════════════════════════════════════════════════════════════
 // TRANSLATION SYSTEM
-// ═══════════════════════════════════════════════════════════════
 let currentLang = '';
-const transCache = {}; // key: "idiom||lang" -> {equiv, meaning, note}
-
-function setLanguage(lang) {
-  currentLang = lang;
-  // Re-render current activity to show/hide translation panels
-  if (currentSet) renderActivity();
-}
-
-// Returns a unique cache key
+const transCache = {};
 function cacheKey(idiom, lang) { return idiom + '||' + lang; }
+function setLanguage(lang) { currentLang = lang; if (currentSet) renderActivity(); }
 
-// Fetch translation via Anthropic API
 async function fetchTranslation(idiom, meaning, lang) {
   const key = cacheKey(idiom, lang);
   if (transCache[key]) return transCache[key];
-
-  const prompt = `You are a linguistics expert helping English language learners understand idioms.
-
-The English idiom is: "${idiom}"
-Its meaning is: "${meaning}"
-
-Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
-{
-  "equiv": "the closest equivalent idiom or expression in ${lang} (in the ${lang} script/alphabet), or null if none exists",
-  "meaning": "the meaning of the English idiom translated into ${lang} (in ${lang} script)",
-  "note": "one short sentence in ${lang} explaining if the equivalent is close or different, or noting there is no equivalent — omit this field if the equivalent is very close"
-}`;
-
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 300,
-        messages: [{ role: 'user', content: prompt }]
-      })
+    const params = new URLSearchParams({ action: 'translate', idiom: idiom, meaning: meaning, lang: lang });
+    const resp = await fetch('https://script.google.com/macros/s/AKfycbwmVZsJOX8ow10L2Bj9eA5TbS_I9B_EKHqqhDt-G-V1bXv2EUczQAQhDJo4_bSflHCd/exec?' + params, {
+      method: 'GET',
+      redirect: 'follow'
     });
     const data = await resp.json();
-    // If the API returned an error, surface it
-    if (data.error) {
-      return { _error: data.error.message || JSON.stringify(data.error) };
-    }
-    const text = data.content?.[0]?.text;
-    if (!text) {
-      return { _error: 'Empty response from API. Full response: ' + JSON.stringify(data).slice(0, 200) };
-    }
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    transCache[key] = parsed;
-    return parsed;
-  } catch (e) {
-    console.error('Translation error:', e);
-    // Return a special object so loadTrans can show what went wrong
+    if (!data.ok) return { _error: data.error || 'Script error' };
+    const result = data.translation || {};
+    transCache[key] = result;
+    return result;
+  } catch(e) {
     return { _error: e.toString() };
   }
 }
 
-// Build the translation panel HTML for an idiom
-// Returns a div string — initially shows loading spinner,
-// then JS fills it in after the async call
 function transPanel(idiom, meaning, panelId) {
   if (!currentLang) return '';
-  return `<div class="trans-panel visible" id="${panelId}">
-    <div class="trans-loading"><span class="spin">⟳</span> Translating to ${currentLang}…</div>
-  </div>`;
+  return '<div class="trans-panel visible" id="' + panelId + '">' +
+    '<div class="trans-loading"><span class="spin">&#8635;</span> Translating to ' + currentLang + '...</div>' +
+    '</div>';
 }
 
-// Called after panel is in the DOM — fetches and fills in translation
 async function loadTrans(idiom, meaning, panelId) {
   if (!currentLang) return;
   const panel = document.getElementById(panelId);
@@ -758,31 +691,25 @@ async function loadTrans(idiom, meaning, panelId) {
   const livePanel = document.getElementById(panelId);
   if (!livePanel) return;
   if (!result || result._error) {
-    const errMsg = result?._error
-      ? `<div class="trans-note" style="font-size:0.75rem;color:#c0392b">Error: ${result._error}</div>`
-      : `<div class="trans-note">Translation unavailable.</div>`;
-    livePanel.innerHTML = `<div class="trans-lang">${currentLang}</div>${errMsg}`;
+    const msg = (result && result._error) ? 'Error: ' + result._error : 'Translation unavailable.';
+    livePanel.innerHTML = '<div class="trans-lang">' + currentLang + '</div>' +
+      '<div class="trans-note" style="color:#c0392b">' + msg + '</div>';
     return;
   }
-  // equiv may come back as the string "null" — treat that as no equivalent
   const hasEquiv = result.equiv && result.equiv !== 'null' && result.equiv.trim().length > 0;
-  let h = `<div class="trans-lang">${currentLang}</div>`;
+  let h = '<div class="trans-lang">' + currentLang + '</div>';
   if (hasEquiv) {
-    h += `<div class="trans-equiv">${result.equiv}</div>`;
+    h += '<div class="trans-equiv">' + result.equiv + '</div>';
   } else {
-    h += `<div class="trans-note">No direct equivalent idiom in ${currentLang}.</div>`;
+    h += '<div class="trans-note">No direct equivalent idiom in ' + currentLang + '.</div>';
   }
-  if (result.meaning && result.meaning !== 'null') h += `<div class="trans-meaning">${result.meaning}</div>`;
-  if (result.note && result.note !== 'null')       h += `<div class="trans-note">${result.note}</div>`;
+  if (result.meaning && result.meaning !== 'null') h += '<div class="trans-meaning">' + result.meaning + '</div>';
+  if (result.note && result.note !== 'null') h += '<div class="trans-note">' + result.note + '</div>';
   livePanel.innerHTML = h;
 }
 
-
-
-// Translation popup for matching activity
 async function showMatchTrans(idiom, meaning) {
   if (!currentLang) return;
-  // Create or find the match trans panel
   let panel = document.getElementById('trans-match-panel');
   if (!panel) {
     panel = document.createElement('div');
@@ -792,15 +719,19 @@ async function showMatchTrans(idiom, meaning) {
     const scoreEl = document.getElementById('mscore');
     if (scoreEl) scoreEl.parentNode.insertBefore(panel, scoreEl.nextSibling);
   }
-  panel.innerHTML = `<div class="trans-loading"><span class="spin">⟳</span> Translating "${idiom}" to ${currentLang}…</div>`;
+  panel.innerHTML = '<div class="trans-loading"><span class="spin">&#8635;</span> Translating "' + idiom + '" to ' + currentLang + '...</div>';
   const result = await fetchTranslation(idiom, meaning, currentLang);
   if (!panel) return;
-  if (!result) { panel.innerHTML = `<div class="trans-note">Translation unavailable.</div>`; return; }
-  let h = `<div class="trans-lang">${currentLang} — <strong>${idiom}</strong></div>`;
-  if (result.equiv) h += `<div class="trans-equiv">${result.equiv}</div>`;
-  else h += `<div class="trans-note">No direct equivalent in ${currentLang}.</div>`;
-  if (result.meaning) h += `<div class="trans-meaning">${result.meaning}</div>`;
-  if (result.note)    h += `<div class="trans-note">${result.note}</div>`;
+  if (!result || result._error) {
+    panel.innerHTML = '<div class="trans-note">Translation unavailable.</div>';
+    return;
+  }
+  const hasEquiv = result.equiv && result.equiv !== 'null' && result.equiv.trim().length > 0;
+  let h = '<div class="trans-lang">' + currentLang + ' — <strong>' + idiom + '</strong></div>';
+  if (hasEquiv) h += '<div class="trans-equiv">' + result.equiv + '</div>';
+  else h += '<div class="trans-note">No direct equivalent in ' + currentLang + '.</div>';
+  if (result.meaning) h += '<div class="trans-meaning">' + result.meaning + '</div>';
+  if (result.note) h += '<div class="trans-note">' + result.note + '</div>';
   panel.innerHTML = h;
 }
 
@@ -932,10 +863,7 @@ function renderListen(idioms){
       <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
       <div class="score-badge">Question ${idx+1} / ${idioms.length} · Score: ${listenState.score}</div>
       <div class="listen-card">
-        <div class="idiom-header" style="margin-bottom:8px">
-          <div class="idiom-title" style="font-size:1.1rem">${correct.idiom}</div>
-          <button class="icon-speak" onclick="speak('${esc(correct.idiom)}')" title="Hear it">🔊</button>
-        </div>
+        <div class="idiom-header" style="margin-bottom:8px"><div class="idiom-title" style="font-size:1.1rem">${correct.idiom}</div><button class="icon-speak" onclick="speak('${esc(correct.idiom)}')" title="Hear it">🔊</button></div>
         ${transPanel(correct.idiom, correct.meaning, 'trans-listen')}
         <div class="listen-prompt">🎧 Which picture matches the idiom you hear?</div>
         <button class="play-btn" onclick="speak('${esc(correct.idiom)}')">🔊</button>
@@ -1029,7 +957,7 @@ function renderMatching(idioms){
   function render(){
     setHTML(m, `
       <div class="section-head"><h1>${currentSet.name} — Picture Match</h1><p>Click a cartoon on the left, then its meaning on the right.</p></div>
-      ${currentLang ? `<div id="trans-match-info" style="font-size:0.8rem;color:var(--accent4);padding:6px 0;font-style:italic">💬 Click any idiom card to see its ${currentLang} translation.</div>` : ''}
+      ${currentLang ? '<div style="font-size:0.8rem;color:var(--accent4);padding:6px 0;font-style:italic">Click any idiom card to see its ' + currentLang + ' translation.</div>' : ''}
       <div class="match-score" id="mscore">✅ Matched: ${matched.size} / ${pool.length}</div>
       <div class="match-layout">
         <div class="match-col">
@@ -1037,7 +965,7 @@ function renderMatching(idioms){
             <div class="match-item img-item ${matched.has(item.idiom)?'correct':''}" id="left${i}" onclick="matchClick('left','${esc(item.idiom)}','left${i}')">
               ${IMAGES[item.idiom]?`<img src="${IMAGES[item.idiom]}" alt="${item.idiom}">`:''}
               <div style="display:flex;align-items:center;gap:6px;justify-content:center;margin-top:6px">
-                <span class="img-label" style="margin-top:0;cursor:${currentLang?'pointer':'default'}" onclick="event.stopPropagation();showMatchTrans('${esc(item.idiom)}','${esc(item.meaning)}')">${item.idiom}</span>
+                <span class="img-label" style="margin-top:0;cursor:pointer" onclick="event.stopPropagation();showMatchTrans('${esc(item.idiom)}','${esc(item.meaning)}')">${item.idiom}</span>
                 <button class="icon-speak" style="width:24px;height:24px;font-size:0.7rem" onclick="event.stopPropagation();speak('${esc(item.idiom)}')" title="Hear it">🔊</button>
               </div>
             </div>`).join("")}
