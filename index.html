@@ -662,7 +662,7 @@ async function fetchTranslation(idiom, meaning, lang) {
   if (transCache[key]) return transCache[key];
   try {
     const params = new URLSearchParams({ action: 'translate', idiom: idiom, meaning: meaning, lang: lang });
-    const resp = await fetch('https://script.google.com/macros/s/AKfycbwmVZsJOX8ow10L2Bj9eA5TbS_I9B_EKHqqhDt-G-V1bXv2EUczQAQhDJo4_bSflHCd/exec?' + params, {
+    const resp = await fetch('https://script.google.com/macros/s/AKfycbwbFr3oopIITlxKDhI5wGhEZdomWc3tmB5ZSK6NpBVisPAz-CMA4uKiruXDkCEU3T0Q/exec?' + params, {
       method: 'GET',
       redirect: 'follow'
     });
