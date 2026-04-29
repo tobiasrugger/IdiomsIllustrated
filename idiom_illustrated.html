@@ -1139,6 +1139,37 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+
+window.addEventListener('DOMContentLoaded', function() {
+  // Read URL params from index link
+  const p = new URLSearchParams(window.location.search);
+  const setId = p.get('set');
+  const name  = p.get('name');
+  const lang  = p.get('lang');
+
+  if (name) sessionStorage.setItem('idiom_name', name);
+  if (lang) sessionStorage.setItem('idiom_lang', lang);
+
+  // Set language selector
+  if (lang) {
+    const sel = document.getElementById('langpick');
+    if (sel) { sel.value = lang; setLanguage(lang); }
+  }
+
+  // Load the set
+  if (setId) {
+    const found = SETS.find(function(s){ return s.id === setId; });
+    if (found) {
+      currentSet = found;
+      currentActivity = 'flashcards';
+      resetState();
+    }
+  }
+
+  buildSidebar();
+  renderActivity();
+});
+
 </script>
 </body>
 </html>
