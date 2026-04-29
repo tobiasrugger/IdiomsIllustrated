@@ -643,38 +643,36 @@ async function showMatchTrans(idiom, meaning) {
 // ── FLASHCARDS ──
 function renderFlashcards(idioms){
   const m=document.getElementById("main");
-  function render(){
-    const idx=fcState.idx, item=idioms[idx];
-    const imgSrc = IMAGES[item.idiom] || '';
-    setHTML(m, `
-      <div class="section-head"><h1>${currentSet.name} — Flashcards</h1><p>Read the idiom, meaning, and example. Use the buttons to track your progress.</p></div>
-      <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
-      <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
-        <div style="font-size:0.85rem;font-weight:600;color:var(--muted)">${idx+1} of ${idioms.length}</div>
-        <div class="fc-card" id="fc">
-          ${imgSrc?`<img class="fc-img" src="${imgSrc}" alt="${item.idiom}">`:''}
-          <div class="fc-body">
-            <div class="idiom-header">
-              <div class="idiom-title">${item.idiom}</div>
-              <button class="icon-speak" onclick="event.stopPropagation();speak('${esc(item.idiom)}')" title="Hear it">🔊</button>
-            </div>
-            <div class="fc-meaning" style="font-size:1rem;font-weight:700;color:var(--accent2);margin:8px 0 4px">= ${item.meaning}</div>
-            <div class="fc-example" style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:10px">"${item.example}"</div>
-            ${transPanel(item.idiom, item.meaning, 'trans-fc')}
+  const idx=fcState.idx, item=idioms[idx];
+  const imgSrc=IMAGES[item.idiom]||'';
+  const isLast=idx===idioms.length-1;
+  m.innerHTML=`
+    <div class="section-head"><h1>${currentSet.name} — Flashcards</h1><p>Tap a card to hear it. Use Next to move forward.</p></div>
+    <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
+    <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
+      <div style="font-size:0.85rem;font-weight:600;color:var(--muted)">${idx+1} of ${idioms.length}</div>
+      <div class="fc-card" id="fc">
+        ${imgSrc?`<img class="fc-img" src="${imgSrc}" alt="${item.idiom}">`:''}
+        <div class="fc-body">
+          <div class="idiom-header">
+            <div class="idiom-title">${item.idiom}</div>
+            <button class="icon-speak" onclick="speak('${esc(item.idiom)}')" title="Hear it">🔊</button>
           </div>
+          <div class="fc-meaning" style="font-size:1rem;font-weight:700;color:var(--accent2);margin:8px 0 4px">= ${item.meaning}</div>
+          <div class="fc-example" style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:10px">"${item.example}"</div>
+          ${transPanel(item.idiom, item.meaning, 'trans-fc')}
         </div>
-        <div class="btn-row">
-          <button class="btn-secondary" onclick="mastery['${esc(item.idiom)}']='learning';this.style.background='#fff3ec'">Still learning</button>
-          <button class="btn-secondary" onclick="mastery['${esc(item.idiom)}']='mastered';this.style.background='#e8f7ee'">✅ Got it!</button>
-        </div>
-        <div class="btn-row">
-          <button class="btn-secondary" onclick="fcState.idx=(fcState.idx-1+${idioms.length})%${idioms.length};renderFlashcards(currentSet.idioms)" ${idx===0?'disabled':''}>◀ Back</button>
-          <button class="btn-primary" onclick="fcState.idx=(fcState.idx+1)%${idioms.length};renderFlashcards(currentSet.idioms)">${idx===idioms.length-1?'Restart':'Next ▶'}</button>
-        </div>
-      </div>`);
-    loadTrans(item.idiom, item.meaning, 'trans-fc');
-  }
-  render();
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="mastery['${esc(item.idiom)}']='learning';this.style.background='#fff3ec'">Still learning</button>
+        <button class="btn-secondary" onclick="mastery['${esc(item.idiom)}']='mastered';this.style.background='#e8f7ee'">✅ Got it!</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="fcState.idx=(fcState.idx-1+${idioms.length})%${idioms.length};renderFlashcards(currentSet.idioms)" ${idx===0?'disabled':''}>◀ Back</button>
+        <button class="btn-primary" onclick="fcState.idx=(fcState.idx+1)%${idioms.length};renderFlashcards(currentSet.idioms)">${isLast?'Restart':'Next ▶'}</button>
+      </div>
+    </div>`;
+  loadTrans(item.idiom, item.meaning, 'trans-fc');
 }
 
 // ── PICTURE QUIZ ──
@@ -686,7 +684,7 @@ function renderQuiz(idioms){
     const opts=shuffle([correct,...distractors]);
     let answered=false;
     const imgSrc=IMAGES[correct.idiom]||'';
-    setHTML(m, `
+    m.innerHTML = `
       <div class="section-head"><h1>${currentSet.name} — Picture Quiz</h1><p>Look at the cartoon. What does this idiom mean?</p></div>
       <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
       <div class="score-badge">Question ${idx+1} / ${idioms.length} · Score: ${quizState.score}</div>
@@ -733,7 +731,7 @@ function renderListen(idioms){
     const distractors=shuffle(idioms.filter(i=>i.idiom!==correct.idiom)).slice(0,3);
     const opts=shuffle([correct,...distractors]);
     let answered=false;
-    setHTML(m, `
+    m.innerHTML = `
       <div class="section-head"><h1>${currentSet.name} — Listen & See</h1><p>Press play. Listen to the idiom — then choose the correct picture.</p></div>
       <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
       <div class="score-badge">Question ${idx+1} / ${idioms.length} · Score: ${listenState.score}</div>
@@ -789,7 +787,7 @@ function renderFillBlank(idioms){
     const choices=shuffle([correctAnswer,...distractors]);
     let answered=false;
     const imgSrc=IMAGES[correct.idiom]||'';
-    setHTML(m, `
+    m.innerHTML = `
       <div class="section-head"><h1>${currentSet.name} — Fill in the Blank</h1><p>Look at the picture for a clue. Choose the correct answer.</p></div>
       <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
       <div class="score-badge">Question ${idx+1} / ${idioms.length} · Score: ${fitbState.score}</div>
@@ -833,10 +831,12 @@ function renderMatching(idioms){
   let leftItems=shuffle([...pool]);
   let rightItems=shuffle([...pool]);
   let matched=new Set(), selected=null;
-  function render(){
-    setHTML(m, `
+
+  function drawGrid(){
+    const done = matched.size===pool.length;
+    m.innerHTML = `
       <div class="section-head"><h1>${currentSet.name} — Picture Match</h1><p>Click a cartoon on the left, then its meaning on the right.</p></div>
-      ${currentLang ? `<div id="trans-match-info" style="font-size:0.8rem;color:var(--accent4);padding:6px 0;font-style:italic">💬 Click any idiom card to see its ${currentLang} translation.</div>` : ''}
+      ${currentLang ? `<div style="font-size:0.8rem;color:var(--accent4);padding:6px 0;font-style:italic">💬 Click any idiom name to see its ${currentLang} translation.</div>` : ''}
       <div class="match-score" id="mscore">✅ Matched: ${matched.size} / ${pool.length}</div>
       <div class="match-layout">
         <div class="match-col">
@@ -856,36 +856,52 @@ function renderMatching(idioms){
             </div>`).join("")}
         </div>
       </div>
-      <div style="margin-top:14px"><button class="btn-primary" onclick="renderMatching(currentSet.idioms)">New Game 🔄</button></div>`);
-    window.matchClick=(side,idiom,elId)=>{
-      if(matched.has(idiom))return;
-      const el=document.getElementById(elId);
-      if(!selected){
-        document.querySelectorAll(".match-item.selected").forEach(e=>e.classList.remove("selected"));
-        el.classList.add("selected"); selected={side,idiom,elId};
-      } else {
-        if(selected.side===side){ document.getElementById(selected.elId).classList.remove("selected"); el.classList.add("selected"); selected={side,idiom,elId}; return; }
-        if(selected.idiom===idiom){
-          matched.add(idiom); saveAnswer('matching',idiom,idiom,idiom,true);
-          document.getElementById(selected.elId).className=(selected.side==='left'?'match-item img-item':'match-item')+' correct pop';
-          el.className=(side==='left'?'match-item img-item':'match-item')+' correct pop';
-          speak(idiom); selected=null;
-          document.getElementById("mscore").textContent=`✅ Matched: ${matched.size} / ${pool.length}`;
-          if(matched.size===pool.length)document.getElementById("mscore").innerHTML=`🎉 All matched! Great work!`;
-        } else {
-          document.getElementById(selected.elId).classList.remove("selected");
-          const wrongElId = selected.elId;
-          el.classList.add("wrong"); document.getElementById(wrongElId).classList.add("wrong");
-          selected=null;
-          setTimeout(()=>{
-            el.classList.remove("wrong");
-            const we=document.getElementById(wrongElId); if(we) we.classList.remove("wrong");
-          },700);
-        }
-      }
-    };
+      ${done ? '<div style="margin-top:16px;font-size:1.1rem;font-weight:800;color:var(--accent2)">🎉 All matched! Great work!</div>' : ''}
+      <div style="margin-top:14px"><button class="btn-primary" onclick="renderMatching(currentSet.idioms)">New Game 🔄</button></div>`;
   }
-  render();
+
+  window.matchClick=(side,idiom,elId)=>{
+    if(matched.has(idiom)) return;
+    const el=document.getElementById(elId);
+    if(!selected){
+      document.querySelectorAll(".match-item.selected").forEach(e=>e.classList.remove("selected"));
+      el.classList.add("selected");
+      selected={side,idiom,elId};
+    } else {
+      if(selected.side===side){
+        document.getElementById(selected.elId).classList.remove("selected");
+        el.classList.add("selected");
+        selected={side,idiom,elId};
+        return;
+      }
+      if(selected.idiom===idiom){
+        matched.add(idiom);
+        saveAnswer('matching',idiom,idiom,idiom,true);
+        document.getElementById(selected.elId).className=(selected.side==='left'?'match-item img-item':'match-item')+' correct pop';
+        el.className=(side==='left'?'match-item img-item':'match-item')+' correct pop';
+        speak(idiom);
+        selected=null;
+        const scoreEl=document.getElementById("mscore");
+        if(scoreEl) scoreEl.textContent=`✅ Matched: ${matched.size} / ${pool.length}`;
+        if(matched.size===pool.length){
+          if(scoreEl) scoreEl.innerHTML=`🎉 All matched! Great work!`;
+        }
+      } else {
+        const wrongElId=selected.elId;
+        saveAnswer('matching',selected.idiom,idiom,selected.idiom,false);
+        document.getElementById(selected.elId).classList.remove("selected");
+        el.classList.add("wrong");
+        document.getElementById(wrongElId).classList.add("wrong");
+        selected=null;
+        setTimeout(()=>{
+          el.classList.remove("wrong");
+          const we=document.getElementById(wrongElId); if(we) we.classList.remove("wrong");
+        },700);
+      }
+    }
+  };
+
+  drawGrid();
 }
 
 
