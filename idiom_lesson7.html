@@ -712,10 +712,11 @@ function renderQuiz(idioms){
       if(chosen===correct2){
         el.classList.add("correct","pop");
         document.getElementById("qfb").innerHTML=`<span class="ok">✅ "${correct2}"</span>`;
-        quizState.score++; speak(correct.idiom);
+        quizState.score++; speak(correct.idiom); saveAnswer('quiz',correct.idiom,chosen,correct2,true);
         setTimeout(()=>{ quizState.idx=(quizState.idx+1)%idioms.length; if(quizState.idx===0)quizState.score=0; renderQuiz(currentSet.idioms); }, 1200);
       } else {
         el.classList.add("wrong");
+        saveAnswer('quiz',correct.idiom,chosen,correct2,false);
         document.getElementById("qfb").innerHTML=`<span class="err">❌ Try again!</span>`;
         setTimeout(()=>{ answered=false; el.classList.remove("wrong"); document.getElementById("qfb").innerHTML=""; }, 800);
       }
@@ -759,10 +760,11 @@ function renderListen(idioms){
       if(chosen===correct2){
         el.classList.add("correct","pop");
         document.getElementById("lfb").innerHTML=`<span class="ok">✅ Correct!</span>`;
-        listenState.score++;
+        listenState.score++; saveAnswer('listen',correct.idiom,chosen,correct2,true);
         setTimeout(()=>{ listenState.idx=(listenState.idx+1)%idioms.length; if(listenState.idx===0)listenState.score=0; renderListen(currentSet.idioms); }, 1200);
       } else {
         el.classList.add("wrong");
+        saveAnswer('listen',correct.idiom,chosen,correct2,false);
         document.getElementById("lfb").innerHTML=`<span class="err">❌ Try again!</span>`;
         setTimeout(()=>{ answered=false; el.classList.remove("wrong"); document.getElementById("lfb").innerHTML=""; }, 800);
       }
@@ -810,10 +812,11 @@ function renderFillBlank(idioms){
       if(chosen===correct2){
         blank.textContent=chosen; blank.style.color="var(--accent2)"; blank.style.borderColor="var(--accent2)";
         document.getElementById("ffb").innerHTML=`<span class="ok">✅ Correct!</span>`;
-        fitbState.score++;
+        fitbState.score++; saveAnswer('fillblank',correct.idiom,chosen,correct2,true);
         document.querySelectorAll(".fitb-choice").forEach(b=>b.classList.add("used"));
         setTimeout(()=>{ fitbState.idx=(fitbState.idx+1)%idioms.length; if(fitbState.idx===0)fitbState.score=0; renderFillBlank(currentSet.idioms); }, 1200);
       } else {
+        saveAnswer('fillblank',correct.idiom,chosen,correct2,false);
         document.getElementById("ffb").innerHTML=`<span class="err">❌ Try again!</span>`;
         el.classList.add("used");
         setTimeout(()=>{answered=false;document.getElementById("ffb").innerHTML="";},700);
@@ -863,7 +866,7 @@ function renderMatching(idioms){
       } else {
         if(selected.side===side){ document.getElementById(selected.elId).classList.remove("selected"); el.classList.add("selected"); selected={side,idiom,elId}; return; }
         if(selected.idiom===idiom){
-          matched.add(idiom);
+          matched.add(idiom); saveAnswer('matching',idiom,idiom,idiom,true);
           document.getElementById(selected.elId).className=(selected.side==='left'?'match-item img-item':'match-item')+' correct pop';
           el.className=(side==='left'?'match-item img-item':'match-item')+' correct pop';
           speak(idiom); selected=null;
