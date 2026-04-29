@@ -271,7 +271,7 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 <header>
   <div>
     <div class="logo">Idiom <em>Island</em> <span style="font-size:1rem;opacity:0.6">✦ Trouble & Safety</span></div>
-    <div class="tagline"><a href="idiom_index.html" style="color:#c9b8a8;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.2)">← All Lessons</a></div>
+    <div class="tagline"><a href="index.html" style="color:#c9b8a8;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.2)">← All Lessons</a></div>
   </div>
   <div class="lang-selector">
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
@@ -540,44 +540,18 @@ function cacheKey(idiom, lang) { return idiom + '||' + lang; }
 async function fetchTranslation(idiom, meaning, lang) {
   const key = cacheKey(idiom, lang);
   if (transCache[key]) return transCache[key];
-
-  const prompt = `You are a linguistics expert helping English language learners understand idioms.
-
-The English idiom is: "${idiom}"
-Its meaning is: "${meaning}"
-
-Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no markdown, no explanation outside the JSON:
-{
-  "equiv": "the closest equivalent idiom or expression in ${lang} (in the ${lang} script/alphabet), or null if none exists",
-  "meaning": "the meaning of the English idiom translated into ${lang} (in ${lang} script)",
-  "note": "one short sentence in ${lang} explaining if the equivalent is close or different, or noting there is no equivalent — omit this field if the equivalent is very close"
-}`;
-
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 300,
-        messages: [{ role: 'user', content: prompt }]
-      })
+    const params = new URLSearchParams({ action: 'translate', idiom: idiom, meaning: meaning, lang: lang });
+    const resp = await fetch('https://script.google.com/macros/s/AKfycbwbFr3oopIITlxKDhI5wGhEZdomWc3tmB5ZSK6NpBVisPAz-CMA4uKiruXDkCEU3T0Q/exec?' + params, {
+      method: 'GET',
+      redirect: 'follow'
     });
     const data = await resp.json();
-    const text = data.content?.[0]?.text || '{}';
-    console.log('Translation raw response for', idiom, ':', text);
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    console.log('Translation parsed:', parsed);
-    transCache[key] = parsed;
-    return parsed;
-  } catch (e) {
-    console.error('Translation error:', e);
-    // Return a special object so loadTrans can show what went wrong
+    if (!data.ok) return { _error: data.error || 'Script error' };
+    const result = data.translation || {};
+    transCache[key] = result;
+    return result;
+  } catch(e) {
     return { _error: e.toString() };
   }
 }
