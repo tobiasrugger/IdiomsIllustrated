@@ -276,6 +276,7 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   <div class="lang-selector">
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
     <select id="langpick" onchange="setLanguage(this.value)">
+
       <option value="">— none —</option>
       <option value="Spanish">Spanish</option>
       <option value="Cantonese">Cantonese</option>
@@ -461,13 +462,22 @@ const SET = { id:"action", name:"Action & Attitude", color:"#8b2fc9", idioms:[
     {idiom:"Come Alive", meaning:"brighten up and become active", example:"The party really came alive after midnight."},
     {idiom:"Get the Jump on Someone", meaning:"get the advantage over someone", example:"We got the jump on our competitors by launching early."},
   ]};
-const FITB_LESSON = [];
+const FITB = { 'action': [
+    {s: "Who wants to ___ on our new project?",                               a: "get the ball rolling"},
+    {s: "Hurry up and ___ or we'll miss the bus!",                            a: "shake a leg"},
+    {s: "We all ___ after the last exam.",                                     a: "kicked up our heels"},
+    {s: "They really ___ after winning the championship.",                     a: "painted the town red"},
+    {s: "Despite a lot of pressure, she ___ on her opinion.",                 a: "stuck to her guns"},
+    {s: "___ — we're almost at the finish line!",                             a: "Hang on"},
+    {s: "I might not win, but I'll ___.",                                      a: "give it my best shot"},
+    {s: "The concert really ___ after midnight.",                              a: "came alive"},
+    {s: "We ___ our competitors by launching two weeks early.",                a: "got the jump on"},
+  ] };
 let currentSet = SET;
 let currentActivity = 'flashcards';
 let currentLang = '';
 let fcState={idx:0}, quizState={idx:0,score:0}, fitbState={idx:0,score:0}, listenState={idx:0,score:0};
 let mastery={};
-const FITB = { [SET.id]: FITB_LESSON };
 function addTips(htmlStr) {
   const entries = Object.entries(TIPS).sort((a,b)=>b[0].length-a[0].length);
   return htmlStr.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
@@ -552,7 +562,7 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -640,7 +650,7 @@ async function showMatchTrans(idiom, meaning) {
 
 
 
-function selectActivity(id){ currentActivity=id; if(!currentSet)currentSet=SETS[0]; resetState(); buildSidebar(); renderActivity(); }
+
 
 
 
@@ -891,8 +901,7 @@ function renderMatching(idioms){
   render();
 }
 
-buildSidebar();
-renderWelcome();
+
 
 // Student name + language login
 
@@ -915,15 +924,11 @@ function renderActivity() {
     default: renderFlashcards(idioms);
   }
 }
-window.addEventListener('DOMContentLoaded', function() {
+(function() {
   const lang = sessionStorage.getItem('idiom_lang') || '';
-  if (lang) {
-    currentLang = lang;
-    const sel = document.getElementById('langpick');
-    if (sel) { sel.value = lang; }
-  }
+  if (lang) { currentLang = lang; const sel = document.getElementById('langpick'); if (sel) sel.value = lang; }
   renderActivity();
-});
+})();
 </script>
 </body>
 </html>

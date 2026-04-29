@@ -276,6 +276,7 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   <div class="lang-selector">
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
     <select id="langpick" onchange="setLanguage(this.value)">
+
       <option value="">— none —</option>
       <option value="Spanish">Spanish</option>
       <option value="Cantonese">Cantonese</option>
@@ -461,13 +462,22 @@ const SET = { id:"honesty", name:"Truth & Deception", color:"#b5420a", idioms:[
     {idiom:"Keep Under One's Hat", meaning:"keep something a secret", example:"Keep this under your hat — it's not official yet."},
     {idiom:"Pull Strings", meaning:"exert influence", example:"Her father pulled strings to get her the internship."},
   ]};
-const FITB_LESSON = [];
+const FITB = { 'honesty': [
+    {s: "After the big fight, they decided to ___.",                           a: "bury the hatchet"},
+    {s: "He ___ about why he was late.",                                       a: "fed me a line"},
+    {s: "That salesman's whole pitch was a total ___.",                        a: "snow job"},
+    {s: "She ___ for months without ever really committing.",                  a: "strung him along"},
+    {s: "I said he was being lazy — well, ___.",                              a: "if the shoe fits, wear it"},
+    {s: "Help me move this weekend and I'll ___ sometime.",                    a: "scratch your back"},
+    {s: "We just sat on the porch ___.",                                       a: "shooting the breeze"},
+    {s: "___ — don't tell anyone about this yet.",                            a: "Keep it under your hat"},
+    {s: "Her father ___ to get her the internship.",                           a: "pulled strings"},
+  ] };
 let currentSet = SET;
 let currentActivity = 'flashcards';
 let currentLang = '';
 let fcState={idx:0}, quizState={idx:0,score:0}, fitbState={idx:0,score:0}, listenState={idx:0,score:0};
 let mastery={};
-const FITB = { [SET.id]: FITB_LESSON };
 function addTips(htmlStr) {
   const entries = Object.entries(TIPS).sort((a,b)=>b[0].length-a[0].length);
   return htmlStr.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
@@ -552,7 +562,7 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -640,7 +650,7 @@ async function showMatchTrans(idiom, meaning) {
 
 
 
-function selectActivity(id){ currentActivity=id; if(!currentSet)currentSet=SETS[0]; resetState(); buildSidebar(); renderActivity(); }
+
 
 
 
@@ -891,8 +901,7 @@ function renderMatching(idioms){
   render();
 }
 
-buildSidebar();
-renderWelcome();
+
 
 // Student name + language login
 
@@ -915,15 +924,11 @@ function renderActivity() {
     default: renderFlashcards(idioms);
   }
 }
-window.addEventListener('DOMContentLoaded', function() {
+(function() {
   const lang = sessionStorage.getItem('idiom_lang') || '';
-  if (lang) {
-    currentLang = lang;
-    const sel = document.getElementById('langpick');
-    if (sel) { sel.value = lang; }
-  }
+  if (lang) { currentLang = lang; const sel = document.getElementById('langpick'); if (sel) sel.value = lang; }
   renderActivity();
-});
+})();
 </script>
 </body>
 </html>

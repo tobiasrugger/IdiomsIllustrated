@@ -276,6 +276,7 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   <div class="lang-selector">
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
     <select id="langpick" onchange="setLanguage(this.value)">
+
       <option value="">— none —</option>
       <option value="Spanish">Spanish</option>
       <option value="Cantonese">Cantonese</option>
@@ -461,13 +462,22 @@ const SET = { id:"animals", name:"Animal Kingdom", color:"#2a7a4b", idioms:[
     {idiom:"On One's Last Legs", meaning:"sick and failing", example:"My old car is on its last legs."},
     {idiom:"Eating Someone", meaning:"bothering or worrying someone", example:"What's eating you? You seem upset."},
   ]};
-const FITB_LESSON = [];
+const FITB = { 'animals': [
+    {s: "Stop ___ and get back to work!",                                      a: "horsing around"},
+    {s: "That old neighborhood has really ___.",                               a: "gone to the dogs"},
+    {s: "Don't bring it up again — just ___.",                                 a: "let sleeping dogs lie"},
+    {s: "My boss seems scary, but his bark is ___ his bite.",                  a: "worse than"},
+    {s: "That two-hour meeting was totally ___.",                              a: "for the birds"},
+    {s: "I arrived before the doors opened — the early bird ___.",             a: "catches the worm"},
+    {s: "The quiz was ___ for anyone who had studied.",                        a: "duck soup"},
+    {s: "My old laptop is really ___.",                                        a: "on its last legs"},
+    {s: "What's ___ you today? You seem really upset.",                        a: "eating"},
+  ] };
 let currentSet = SET;
 let currentActivity = 'flashcards';
 let currentLang = '';
 let fcState={idx:0}, quizState={idx:0,score:0}, fitbState={idx:0,score:0}, listenState={idx:0,score:0};
 let mastery={};
-const FITB = { [SET.id]: FITB_LESSON };
 function addTips(htmlStr) {
   const entries = Object.entries(TIPS).sort((a,b)=>b[0].length-a[0].length);
   return htmlStr.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
@@ -552,7 +562,7 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -640,7 +650,7 @@ async function showMatchTrans(idiom, meaning) {
 
 
 
-function selectActivity(id){ currentActivity=id; if(!currentSet)currentSet=SETS[0]; resetState(); buildSidebar(); renderActivity(); }
+
 
 
 
@@ -891,8 +901,7 @@ function renderMatching(idioms){
   render();
 }
 
-buildSidebar();
-renderWelcome();
+
 
 // Student name + language login
 
@@ -915,15 +924,11 @@ function renderActivity() {
     default: renderFlashcards(idioms);
   }
 }
-window.addEventListener('DOMContentLoaded', function() {
+(function() {
   const lang = sessionStorage.getItem('idiom_lang') || '';
-  if (lang) {
-    currentLang = lang;
-    const sel = document.getElementById('langpick');
-    if (sel) { sel.value = lang; }
-  }
+  if (lang) { currentLang = lang; const sel = document.getElementById('langpick'); if (sel) sel.value = lang; }
   renderActivity();
-});
+})();
 </script>
 </body>
 </html>

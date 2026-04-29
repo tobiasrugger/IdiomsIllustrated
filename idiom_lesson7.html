@@ -276,6 +276,7 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   <div class="lang-selector">
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
     <select id="langpick" onchange="setLanguage(this.value)">
+
       <option value="">— none —</option>
       <option value="Spanish">Spanish</option>
       <option value="Cantonese">Cantonese</option>
@@ -466,13 +467,27 @@ const SET = { id:"wisdom", name:"Wisdom & Advice", color:"#2c6e49", idioms:[
     {idiom:"Get the Ax", meaning:"be dismissed, fired", example:"He got the ax after missing work three times."},
     {idiom:"In Stitches", meaning:"laughing very hard", example:"Her jokes had us all in stitches."},
   ]};
-const FITB_LESSON = [];
+const FITB = { 'wisdom': [
+    {s: "You're complaining about her? People who live in glass houses ___.",  a: "shouldn't throw stones"},
+    {s: "We got lost but found a great place to eat — ___!",                  a: "all's well that ends well"},
+    {s: "He likes jazz, she likes hip-hop — ___.",                            a: "different strokes for different folks"},
+    {s: "Always ___ when you're meeting your partner's parents.",              a: "mind your P's and Q's"},
+    {s: "The coach looked at the team and said: ___!",                        a: "shape up or ship out"},
+    {s: "I completely ___ on that job interview.",                             a: "blew it"},
+    {s: "After getting the big promotion, she really ___.",                    a: "had the world by the tail"},
+    {s: "With two job offers on the table, he was ___.",                       a: "sitting pretty"},
+    {s: "She walked into the party totally ___.",                              a: "dressed to kill"},
+    {s: "The suspect ___ before anyone knew what happened.",                   a: "gave the police the slip"},
+    {s: "He got really ___ when they blamed him for the mistake.",             a: "hot under the collar"},
+    {s: "My teacher ___ when I was in trouble with the principal.",            a: "went to bat for me"},
+    {s: "He ___ after missing work too many times.",                           a: "got the ax"},
+    {s: "Her jokes had the whole room ___.",                                   a: "in stitches"},
+  ] };
 let currentSet = SET;
 let currentActivity = 'flashcards';
 let currentLang = '';
 let fcState={idx:0}, quizState={idx:0,score:0}, fitbState={idx:0,score:0}, listenState={idx:0,score:0};
 let mastery={};
-const FITB = { [SET.id]: FITB_LESSON };
 function addTips(htmlStr) {
   const entries = Object.entries(TIPS).sort((a,b)=>b[0].length-a[0].length);
   return htmlStr.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
@@ -557,7 +572,7 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -645,7 +660,7 @@ async function showMatchTrans(idiom, meaning) {
 
 
 
-function selectActivity(id){ currentActivity=id; if(!currentSet)currentSet=SETS[0]; resetState(); buildSidebar(); renderActivity(); }
+
 
 
 
@@ -896,8 +911,7 @@ function renderMatching(idioms){
   render();
 }
 
-buildSidebar();
-renderWelcome();
+
 
 // Student name + language login
 
@@ -920,15 +934,11 @@ function renderActivity() {
     default: renderFlashcards(idioms);
   }
 }
-window.addEventListener('DOMContentLoaded', function() {
+(function() {
   const lang = sessionStorage.getItem('idiom_lang') || '';
-  if (lang) {
-    currentLang = lang;
-    const sel = document.getElementById('langpick');
-    if (sel) { sel.value = lang; }
-  }
+  if (lang) { currentLang = lang; const sel = document.getElementById('langpick'); if (sel) sel.value = lang; }
   renderActivity();
-});
+})();
 </script>
 </body>
 </html>

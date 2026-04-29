@@ -276,6 +276,7 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   <div class="lang-selector">
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
     <select id="langpick" onchange="setLanguage(this.value)">
+
       <option value="">— none —</option>
       <option value="Spanish">Spanish</option>
       <option value="Cantonese">Cantonese</option>
@@ -461,13 +462,22 @@ const SET = { id:"money", name:"Money Matters", color:"#1b5fa8", idioms:[
     {idiom:"Put One's Money Where One's Mouth Is", meaning:"follow through with a stated intention", example:"If you think it's a good idea, put your money where your mouth is."},
     {idiom:"Lemon", meaning:"something defective", example:"That car turned out to be a real lemon."},
   ]};
-const FITB_LESSON = [];
+const FITB = { 'money': [
+    {s: "After the vacation, we were ___ by about $300.",                      a: "in the hole"},
+    {s: "She works two jobs just to ___.",                                     a: "make ends meet"},
+    {s: "He ___ on a bad investment last year.",                               a: "lost his shirt"},
+    {s: "They got the best seats right away — ___.",                           a: "money talks"},
+    {s: "Just ___ the money you owe me.",                                      a: "fork over"},
+    {s: "Don't ___ — she's a lot smarter than you think.",                     a: "sell her short"},
+    {s: "Her debut album really ___.",                                         a: "made a splash"},
+    {s: "If you believe in it, you should ___.",                               a: "put your money where your mouth is"},
+    {s: "That car I bought turned out to be a total ___.",                     a: "lemon"},
+  ] };
 let currentSet = SET;
 let currentActivity = 'flashcards';
 let currentLang = '';
 let fcState={idx:0}, quizState={idx:0,score:0}, fitbState={idx:0,score:0}, listenState={idx:0,score:0};
 let mastery={};
-const FITB = { [SET.id]: FITB_LESSON };
 function addTips(htmlStr) {
   const entries = Object.entries(TIPS).sort((a,b)=>b[0].length-a[0].length);
   return htmlStr.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
@@ -552,7 +562,7 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -640,7 +650,7 @@ async function showMatchTrans(idiom, meaning) {
 
 
 
-function selectActivity(id){ currentActivity=id; if(!currentSet)currentSet=SETS[0]; resetState(); buildSidebar(); renderActivity(); }
+
 
 
 
@@ -891,8 +901,7 @@ function renderMatching(idioms){
   render();
 }
 
-buildSidebar();
-renderWelcome();
+
 
 // Student name + language login
 
@@ -915,15 +924,11 @@ function renderActivity() {
     default: renderFlashcards(idioms);
   }
 }
-window.addEventListener('DOMContentLoaded', function() {
+(function() {
   const lang = sessionStorage.getItem('idiom_lang') || '';
-  if (lang) {
-    currentLang = lang;
-    const sel = document.getElementById('langpick');
-    if (sel) { sel.value = lang; }
-  }
+  if (lang) { currentLang = lang; const sel = document.getElementById('langpick'); if (sel) sel.value = lang; }
   renderActivity();
-});
+})();
 </script>
 </body>
 </html>

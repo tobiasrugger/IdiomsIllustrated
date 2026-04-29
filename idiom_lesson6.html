@@ -276,6 +276,7 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   <div class="lang-selector">
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
     <select id="langpick" onchange="setLanguage(this.value)">
+
       <option value="">— none —</option>
       <option value="Spanish">Spanish</option>
       <option value="Cantonese">Cantonese</option>
@@ -461,13 +462,22 @@ const SET = { id:"trouble", name:"Trouble & Safety", color:"#c0392b", idioms:[
     {idiom:"Get Up on the Wrong Side of the Bed", meaning:"wake up in a bad mood", example:"She bit everyone's head off this morning."},
     {idiom:"Leave Someone High and Dry", meaning:"abandon someone", example:"He left us high and dry the day before the event."},
   ]};
-const FITB_LESSON = [];
+const FITB = { 'trouble': [
+    {s: "His job was ___ after that big mistake.",                             a: "on the line"},
+    {s: "After three sleepless nights, I was ___.",                            a: "at the end of my rope"},
+    {s: "Just ___ and get the shot — it'll be over in a second.",             a: "bite the bullet"},
+    {s: "She's recovering well, but she's not ___ yet.",                       a: "out of the woods"},
+    {s: "I really ___ when I recommended that contractor.",                    a: "went out on a limb"},
+    {s: "Somehow the suspect ___ before the police arrived.",                  a: "got away clean"},
+    {s: "You broke the rule — now you have to ___.",                           a: "face the music"},
+    {s: "She was grumpy all morning — she must have ___.",                     a: "gotten up on the wrong side of the bed"},
+    {s: "He ___ without even saying goodbye.",                                 a: "left us high and dry"},
+  ] };
 let currentSet = SET;
 let currentActivity = 'flashcards';
 let currentLang = '';
 let fcState={idx:0}, quizState={idx:0,score:0}, fitbState={idx:0,score:0}, listenState={idx:0,score:0};
 let mastery={};
-const FITB = { [SET.id]: FITB_LESSON };
 function addTips(htmlStr) {
   const entries = Object.entries(TIPS).sort((a,b)=>b[0].length-a[0].length);
   return htmlStr.replace(/(<[^>]+>)|([^<]+)/g, (match, tag, text) => {
@@ -552,7 +562,7 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -640,7 +650,7 @@ async function showMatchTrans(idiom, meaning) {
 
 
 
-function selectActivity(id){ currentActivity=id; if(!currentSet)currentSet=SETS[0]; resetState(); buildSidebar(); renderActivity(); }
+
 
 
 
@@ -891,8 +901,7 @@ function renderMatching(idioms){
   render();
 }
 
-buildSidebar();
-renderWelcome();
+
 
 // Student name + language login
 
@@ -915,15 +924,11 @@ function renderActivity() {
     default: renderFlashcards(idioms);
   }
 }
-window.addEventListener('DOMContentLoaded', function() {
+(function() {
   const lang = sessionStorage.getItem('idiom_lang') || '';
-  if (lang) {
-    currentLang = lang;
-    const sel = document.getElementById('langpick');
-    if (sel) { sel.value = lang; }
-  }
+  if (lang) { currentLang = lang; const sel = document.getElementById('langpick'); if (sel) sel.value = lang; }
   renderActivity();
-});
+})();
 </script>
 </body>
 </html>
