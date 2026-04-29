@@ -384,6 +384,7 @@ const SET = { id:"animals", name:"Animal Kingdom", color:"#2a7a4b", idioms:[
 const FITB_LESSON = [];
 let currentSet = SET;
 let currentActivity = 'flashcards';
+let currentLang = '';
 let fcState={idx:0}, quizState={idx:0,score:0}, fitbState={idx:0,score:0}, listenState={idx:0,score:0};
 let mastery={};
 const FITB = { [SET.id]: FITB_LESSON };
@@ -404,7 +405,6 @@ function speak(text){ if(!window.speechSynthesis)return; const u=new SpeechSynth
 // ═══════════════════════════════════════════════════════════════
 // TRANSLATION SYSTEM
 // ═══════════════════════════════════════════════════════════════
-let currentLang = '';
 const transCache = {}; // key: "idiom||lang" -> {equiv, meaning, note}
 
 function setLanguage(lang) {
@@ -767,9 +767,13 @@ function renderMatching(idioms){
           if(matched.size===pool.length)document.getElementById("mscore").innerHTML=`🎉 All matched! Great work!`;
         } else {
           document.getElementById(selected.elId).classList.remove("selected");
-          el.classList.add("wrong"); document.getElementById(selected.elId).classList.add("wrong");
-          setTimeout(()=>{el.classList.remove("wrong");document.getElementById(selected.elId)?.classList.remove("wrong");},600);
+          const wrongElId = selected.elId;
+          el.classList.add("wrong"); document.getElementById(wrongElId).classList.add("wrong");
           selected=null;
+          setTimeout(()=>{
+            el.classList.remove("wrong");
+            const we=document.getElementById(wrongElId); if(we) we.classList.remove("wrong");
+          },700);
         }
       }
     };
@@ -804,8 +808,9 @@ function renderActivity() {
 window.addEventListener('DOMContentLoaded', function() {
   const lang = sessionStorage.getItem('idiom_lang') || '';
   if (lang) {
+    currentLang = lang;
     const sel = document.getElementById('langpick');
-    if (sel) { sel.value = lang; setLanguage(lang); }
+    if (sel) { sel.value = lang; }
   }
   renderActivity();
 });
