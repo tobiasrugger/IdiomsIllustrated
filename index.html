@@ -247,9 +247,7 @@ function renderLessons() {
       '<label for="cb_' + lesson.id + '">Done?</label></div>';
 
     if (enabled) {
-      const url = 'idiom_illustrated.html?set=' + lesson.id +
-        '&name=' + encodeURIComponent(studentName) +
-        '&lang=' + encodeURIComponent(studentLang);
+      const url = 'idiom_lesson' + lesson.num + '.html';
       row.innerHTML = '<a class="lesson-link" href="' + url + '">' +
         numDiv + info + arrow + '</a>' + cbHtml;
     } else {
