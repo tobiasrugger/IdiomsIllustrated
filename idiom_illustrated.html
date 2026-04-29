@@ -20,11 +20,9 @@ header { background: var(--ink); padding: 20px 28px; display:flex; align-items:c
 .logo em { color:var(--accent); font-style:normal; }
 .tagline { font-size:0.8rem; color:#a89e96; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
 
-.app { display:flex; min-height:calc(100vh - 80px); }
-.sidebar { width:240px; flex-shrink:0; background:var(--warm); border-right:2px solid var(--border); padding:20px 14px; overflow-y:auto; }
-.sidebar-section { font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); padding:0 8px; margin:16px 0 6px; }
-.sidebar-section:first-child { margin-top:0; }
-.set-btn, .act-btn { display:flex; align-items:center; gap:10px; width:100%; padding:9px 12px; border-radius:10px; border:none; background:transparent; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:500; color:var(--ink); text-align:left; transition:all 0.15s; }
+.main { padding:24px 20px; max-width:780px; margin:0 auto; }
+.top-nav { display:flex; gap:6px; padding:12px 20px; background:var(--warm); border-bottom:2px solid var(--border); flex-wrap:wrap; }
+.act-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:10px; border:none; background:transparent; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.88rem; font-weight:500; color:var(--ink); text-align:left; transition:all 0.15s; }
 .set-btn:hover, .act-btn:hover { background:var(--border); }
 .set-btn.active { background:var(--ink); color:var(--paper); }
 .act-btn.active { background:var(--accent); color:#fff; }
@@ -266,7 +264,7 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 <header>
   <div>
     <div class="logo">Idiom <em>Island</em> <span style="font-size:1rem;opacity:0.6">✦ Illustrated</span></div>
-    <div class="tagline">Learn with the original cartoon cards</div>
+    <div class="tagline"><a href="idiom_index.html" style="color:#c9b8a8;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.2)">← All Lessons</a></div>
   </div>
   <div class="lang-selector">
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
@@ -285,10 +283,10 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     </select>
   </div>
 </header>
-<div class="app">
-  <nav class="sidebar" id="sidebar"></nav>
-  <main class="main" id="main"></main>
+<div id="activity-nav" style="display:none">
+  <nav class="top-nav" id="top-nav"></nav>
 </div>
+<main class="main" id="main"></main>
 <script>
 const IMAGES = {
   'In the Hole': 'data:image/jpeg;base64,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',
@@ -714,7 +712,7 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
         'anthropic-dangerous-direct-browser-access': 'true'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-5',
         max_tokens: 300,
         messages: [{ role: 'user', content: prompt }]
       })
@@ -729,7 +727,8 @@ Translate this for a speaker of ${lang}. Respond with ONLY a JSON object, no mar
     return parsed;
   } catch (e) {
     console.error('Translation error:', e);
-    return null;
+    // Return a special object so loadTrans can show what went wrong
+    return { _error: e.toString() };
   }
 }
 
@@ -751,8 +750,11 @@ async function loadTrans(idiom, meaning, panelId) {
   const result = await fetchTranslation(idiom, meaning, currentLang);
   const livePanel = document.getElementById(panelId);
   if (!livePanel) return;
-  if (!result) {
-    livePanel.innerHTML = `<div class="trans-lang">${currentLang}</div><div class="trans-note">Translation unavailable.</div>`;
+  if (!result || result._error) {
+    const errMsg = result?._error
+      ? `<div class="trans-note" style="font-size:0.75rem;color:#c0392b">Error: ${result._error}</div>`
+      : `<div class="trans-note">Translation unavailable.</div>`;
+    livePanel.innerHTML = `<div class="trans-lang">${currentLang}</div>${errMsg}`;
     return;
   }
   // equiv may come back as the string "null" — treat that as no equivalent
@@ -796,16 +798,35 @@ async function showMatchTrans(idiom, meaning) {
 }
 
 function buildSidebar(){
-  document.getElementById("sidebar").innerHTML = `
-    <div class="sidebar-section">Sets</div>
-    ${SETS.map(s=>`<button class="set-btn ${currentSet&&currentSet.id===s.id?'active':''}" onclick="selectSet('${s.id}')"><span class="dot" style="background:${s.color}"></span>${s.name}</button>`).join("")}
-    <div class="divider"></div>
-    <div class="sidebar-section">Activities</div>
-    ${[{id:"flashcards",label:"🃏 Flashcards"},{id:"quiz",label:"🖼️ Picture Quiz"},{id:"listen",label:"🔊 Listen & See"},{id:"fillblank",label:"✏️ Fill in Blank"},{id:"matching",label:"🔗 Picture Match"}].map(a=>`<button class="act-btn ${currentActivity===a.id&&currentSet?'active':''}" onclick="selectActivity('${a.id}')">${a.label}</button>`).join("")}
-  `;
+  const ACTIVITIES = [
+    {id:"flashcards", label:"1 — Learn Vocabulary"},
+    {id:"quiz",       label:"2 — Picture Quiz"},
+    {id:"listen",     label:"3 — Listen & See"},
+    {id:"fillblank",  label:"4 — Fill in the Blank"},
+    {id:"matching",   label:"5 — Picture Match"},
+  ];
+  const nav = document.getElementById("top-nav");
+  if (!nav) return;
+  nav.innerHTML = ACTIVITIES.map(a=>`<button class="act-btn ${currentActivity===a.id?'active':''}" onclick="selectActivity('${a.id}')">${a.label}</button>`).join("");
+  document.getElementById("activity-nav").style.display = currentSet ? "block" : "none";
 }
 
-function selectSet(id){ currentSet=SETS.find(s=>s.id===id); if(!currentActivity||currentActivity==='tracker')currentActivity='flashcards'; resetState(); buildSidebar(); renderActivity(); }
+function selectSet(id){ currentSet=SETS.find(s=>s.id===id); if(!currentActivity||currentActivity==='tracker')currentActivity='flashcards'; resetState(); 
+// Read URL params (coming from index)
+(function(){
+  const p = new URLSearchParams(window.location.search);
+  const setId = p.get('set');
+  const name  = p.get('name');
+  const lang  = p.get('lang');
+  if (name)  { sessionStorage.setItem('idiom_name', name); }
+  if (lang)  { sessionStorage.setItem('idiom_lang', lang); const sel=document.getElementById('langpick'); if(sel){sel.value=lang; setLanguage(lang);} }
+  if (setId) {
+    const found = SETS.find(s=>s.id===setId);
+    if (found) { currentSet=found; currentActivity='flashcards'; resetState(); }
+  }
+})();
+
+buildSidebar(); renderActivity(); }
 function selectActivity(id){ currentActivity=id; if(!currentSet)currentSet=SETS[0]; resetState(); buildSidebar(); renderActivity(); }
 
 function renderActivity(){
@@ -824,11 +845,7 @@ function renderWelcome(){
   setHTML(document.getElementById('main'), `
     <div class="welcome">
       <h1>Idiom Island<br><em>Illustrated</em></h1>
-      <p>These activities use the original cartoon drawings from your idiom cards. Each illustration shows the literal meaning — the fun is figuring out what the idiom <em>really</em> means!</p>
-      <p style="margin-bottom:16px">Choose a set to begin:</p>
-      <div class="set-preview">
-        ${SETS.map(s=>`<div class="set-pill" onclick="selectSet('${s.id}')" style="border-color:${s.color};color:${s.color}">${s.name}</div>`).join("")}
-      </div>
+      <p>No lesson selected. <a href="idiom_index.html" style="color:var(--accent);font-weight:700">← Back to lessons</a></p>
     </div>`);
 }
 
@@ -839,21 +856,20 @@ function renderFlashcards(idioms){
     const idx=fcState.idx, item=idioms[idx];
     const imgSrc = IMAGES[item.idiom] || '';
     setHTML(m, `
-      <div class="section-head"><h1>${currentSet.name} — Flashcards</h1><p>Look at the picture. Can you guess the idiom? Tap the card to reveal.</p></div>
+      <div class="section-head"><h1>${currentSet.name} — Flashcards</h1><p>Read the idiom, meaning, and example. Use the buttons to track your progress.</p></div>
       <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
       <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
         <div style="font-size:0.85rem;font-weight:600;color:var(--muted)">${idx+1} of ${idioms.length}</div>
-        <div class="fc-card" id="fc" onclick="document.getElementById('fc').classList.toggle('flipped')">
+        <div class="fc-card" id="fc">
           ${imgSrc?`<img class="fc-img" src="${imgSrc}" alt="${item.idiom}">`:''}
           <div class="fc-body">
             <div class="idiom-header">
               <div class="idiom-title">${item.idiom}</div>
               <button class="icon-speak" onclick="event.stopPropagation();speak('${esc(item.idiom)}')" title="Hear it">🔊</button>
             </div>
+            <div class="fc-meaning" style="font-size:1rem;font-weight:700;color:var(--accent2);margin:8px 0 4px">= ${item.meaning}</div>
+            <div class="fc-example" style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:10px">"${item.example}"</div>
             ${transPanel(item.idiom, item.meaning, 'trans-fc')}
-            <div class="fc-tap">👆 Tap to reveal meaning</div>
-            <div class="fc-meaning">= ${item.meaning}</div>
-            <div class="fc-example">"${item.example}"</div>
           </div>
         </div>
         <div class="btn-row">
@@ -884,7 +900,7 @@ function renderQuiz(idioms){
       <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
       <div class="score-badge">Question ${idx+1} / ${idioms.length} · Score: ${quizState.score}</div>
       <div class="quiz-card">
-        ${imgSrc?`<img class="quiz-img" src="${imgSrc}" alt="${correct.idiom}">`:''}
+        ${imgSrc?`<img class="quiz-img" src="${imgSrc}" alt="idiom picture">`:''}
         <div class="idiom-header">
           <div class="idiom-title">${correct.idiom}</div>
           <button class="icon-speak" onclick="speak('${esc(correct.idiom)}')" title="Hear it">🔊</button>
@@ -902,9 +918,16 @@ function renderQuiz(idioms){
     loadTrans(correct.idiom, correct.meaning, 'trans-quiz');
     window.quizAnswer=(chosen,correct2,el)=>{
       if(answered)return; answered=true;
-      document.getElementById("qnext").style.display="block";
-      if(chosen===correct2){ el.classList.add("correct","pop"); document.getElementById("qfb").innerHTML=`<span class="ok">✅ Correct! It means "${correct2}"</span>`; quizState.score++; speak(correct.idiom); }
-      else { el.classList.add("wrong"); document.getElementById("qfb").innerHTML=`<span class="err">❌ It means "${correct2}"</span>`; document.querySelectorAll(".quiz-opt").forEach(o=>{if(o.textContent.trim()===correct2)o.classList.add("correct");}); speak(correct.idiom); }
+      if(chosen===correct2){
+        el.classList.add("correct","pop");
+        document.getElementById("qfb").innerHTML=`<span class="ok">✅ "${correct2}"</span>`;
+        quizState.score++; speak(correct.idiom);
+        setTimeout(()=>{ quizState.idx=(quizState.idx+1)%idioms.length; if(quizState.idx===0)quizState.score=0; renderQuiz(currentSet.idioms); }, 1200);
+      } else {
+        el.classList.add("wrong");
+        document.getElementById("qfb").innerHTML=`<span class="err">❌ Try again!</span>`;
+        setTimeout(()=>{ answered=false; el.classList.remove("wrong"); document.getElementById("qfb").innerHTML=""; }, 800);
+      }
     };
   }
   render();
@@ -923,18 +946,14 @@ function renderListen(idioms){
       <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
       <div class="score-badge">Question ${idx+1} / ${idioms.length} · Score: ${listenState.score}</div>
       <div class="listen-card">
-        <div class="idiom-header" style="margin-bottom:8px">
-          <div class="idiom-title" style="font-size:1.1rem">${correct.idiom}</div>
-          <button class="icon-speak" onclick="speak('${esc(correct.idiom)}')" title="Hear it">🔊</button>
-        </div>
-        ${transPanel(correct.idiom, correct.meaning, 'trans-listen')}
+
         <div class="listen-prompt">🎧 Which picture matches the idiom you hear?</div>
         <button class="play-btn" onclick="speak('${esc(correct.idiom)}')">🔊</button>
         <div class="listen-opts" style="grid-template-columns:1fr 1fr">
           ${opts.map((o,i)=>`
             <div class="listen-opt" id="lopt${i}" onclick="listenAnswer('${esc(o.idiom)}','${esc(correct.idiom)}',this)" style="padding:8px">
-              ${IMAGES[o.idiom]?`<img src="${IMAGES[o.idiom]}" alt="${o.idiom}" style="width:100%;height:110px;object-fit:contain;border-radius:6px;background:#fff;margin-bottom:4px">`:''}
-              <div style="font-size:0.75rem;color:var(--muted);font-weight:600">${o.idiom}</div>
+              ${IMAGES[o.idiom]?`<img src="${IMAGES[o.idiom]}" alt="idiom picture" style="width:100%;height:110px;object-fit:contain;border-radius:6px;background:#fff;margin-bottom:4px">`:''}
+              
             </div>`).join("")}
         </div>
         <div class="listen-fb" id="lfb"></div>
@@ -946,9 +965,16 @@ function renderListen(idioms){
     setTimeout(()=>speak(correct.idiom),500);
     window.listenAnswer=(chosen,correct2,el)=>{
       if(answered)return; answered=true;
-      document.getElementById("lnext").style.display="block";
-      if(chosen===correct2){ el.classList.add("correct","pop"); document.getElementById("lfb").innerHTML=`<span class="ok">✅ Correct!</span>`; listenState.score++; }
-      else { el.classList.add("wrong"); document.getElementById("lfb").innerHTML=`<span class="err">❌ The answer was: ${correct2}</span>`; document.querySelectorAll(".listen-opt").forEach(o=>{if(o.id&&opts.find((opt,i)=>'lopt'+i===o.id&&opt.idiom===correct2))o.classList.add("correct");}); }
+      if(chosen===correct2){
+        el.classList.add("correct","pop");
+        document.getElementById("lfb").innerHTML=`<span class="ok">✅ Correct!</span>`;
+        listenState.score++;
+        setTimeout(()=>{ listenState.idx=(listenState.idx+1)%idioms.length; if(listenState.idx===0)listenState.score=0; renderListen(currentSet.idioms); }, 1200);
+      } else {
+        el.classList.add("wrong");
+        document.getElementById("lfb").innerHTML=`<span class="err">❌ Try again!</span>`;
+        setTimeout(()=>{ answered=false; el.classList.remove("wrong"); document.getElementById("lfb").innerHTML=""; }, 800);
+      }
     };
   }
   render();
@@ -976,11 +1002,7 @@ function renderFillBlank(idioms){
       <div class="score-badge">Question ${idx+1} / ${idioms.length} · Score: ${fitbState.score}</div>
       <div class="fitb-card">
         ${imgSrc?`<img class="fitb-img" src="${imgSrc}" alt="${correct.idiom}">`:'' }
-        <div class="idiom-header" style="margin-bottom:4px">
-          <div class="idiom-title" style="font-size:1.2rem">${correct.idiom}</div>
-          <button class="icon-speak" onclick="speak('${esc(correct.idiom)}')" title="Hear the idiom">🔊</button>
-        </div>
-        ${transPanel(correct.idiom, correct.meaning, 'trans-fitb')}
+
         <div class="fitb-sentence">${sent}</div>
         <div class="fitb-choices">
           ${choices.map(c=>`<button class="fitb-choice" onclick="fitbAnswerFn('${esc(c)}','${esc(correctAnswer)}',this)">${c}</button>`).join("")}
@@ -996,10 +1018,10 @@ function renderFillBlank(idioms){
       const blank=document.getElementById("blankspot");
       if(chosen===correct2){
         blank.textContent=chosen; blank.style.color="var(--accent2)"; blank.style.borderColor="var(--accent2)";
-        document.getElementById("ffb").innerHTML=`<span class="ok">✅ "${chosen}" — ${correct.idiom} = ${correct.meaning}</span>`;
+        document.getElementById("ffb").innerHTML=`<span class="ok">✅ Correct!</span>`;
         fitbState.score++;
         document.querySelectorAll(".fitb-choice").forEach(b=>b.classList.add("used"));
-        document.getElementById("fnext").style.display="block";
+        setTimeout(()=>{ fitbState.idx=(fitbState.idx+1)%idioms.length; if(fitbState.idx===0)fitbState.score=0; renderFillBlank(currentSet.idioms); }, 1200);
       } else {
         document.getElementById("ffb").innerHTML=`<span class="err">❌ Try again!</span>`;
         el.classList.add("used");
@@ -1070,6 +1092,53 @@ function renderMatching(idioms){
 
 buildSidebar();
 renderWelcome();
+
+// Student name + language login
+function validateWelcome() {
+  const name = (document.getElementById('student-name-input')||{}).value || '';
+  const lang = (document.getElementById('student-lang-input')||{}).value || '';
+  const btn  = document.getElementById('start-btn');
+  if (!btn) return;
+  const ok = name.trim().length >= 2 && lang;
+  btn.disabled = !ok;
+  btn.style.opacity = ok ? '1' : '0.4';
+  btn.style.cursor  = ok ? 'pointer' : 'not-allowed';
+}
+
+function startActivities() {
+  const name = (document.getElementById('student-name-input')||{}).value || '';
+  const lang = (document.getElementById('student-lang-input')||{}).value || '';
+  if (!name.trim() || !lang) return;
+  window.studentName = name.trim();
+  window.studentLang = lang;
+  sessionStorage.setItem('idiom_student_name', name.trim());
+  sessionStorage.setItem('idiom_student_lang', lang);
+  // Show set selection
+  setHTML(document.getElementById('main'), `
+    <div class="welcome">
+      <h1>Idiom Island<br><em>Illustrated</em></h1>
+      <p>Welcome, ${name}! Choose a set to begin:</p>
+      <div class="set-preview">
+        ${SETS.map(s=>`<div class="set-pill" onclick="selectSet('${s.id}')" style="border-color:${s.color};color:${s.color}">${s.name}</div>`).join("")}
+      </div>
+    </div>`);
+}
+
+// Restore session on load
+window.addEventListener('DOMContentLoaded', function() {
+  const savedName = sessionStorage.getItem('idiom_student_name');
+  const savedLang = sessionStorage.getItem('idiom_student_lang');
+  if (savedName) {
+    window.studentName = savedName;
+    window.studentLang = savedLang;
+    const inp = document.getElementById('student-name-input');
+    const sel = document.getElementById('student-lang-input');
+    if (inp) { inp.value = savedName; }
+    if (sel && savedLang) { sel.value = savedLang; }
+    validateWelcome();
+  }
+});
+
 </script>
 </body>
 </html>
