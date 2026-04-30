@@ -110,7 +110,7 @@ a.lesson-link{text-decoration:none;color:inherit;display:flex;align-items:center
       <label>My Language</label>
       <select id="login-lang" onchange="validateLogin()">
         <option value="">— select a language —</option>
-        <option value="English">English</option>
+        
         <option value="Spanish">Spanish</option>
         <option value="Cantonese">Cantonese</option>
         <option value="Mandarin">Mandarin</option>
@@ -230,25 +230,6 @@ function renderLessons() {
   const completed = JSON.parse(localStorage.getItem('idiom_completed') || '{}');
   const list = document.getElementById('lesson-list');
   list.innerHTML = '';
-
-  // ── Dictionary links ──────────────────────────────────────
-  var dictRow = document.createElement('div');
-  dictRow.style.cssText = 'display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;';
-  var d1 = document.createElement('a');
-  d1.href = 'idiom_by_topic.html';
-  d1.style.cssText = 'flex:1;min-width:200px;display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--paper);border:2px solid var(--border);border-radius:16px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:all 0.18s;font-family:inherit;';
-  d1.innerHTML = '<div style="font-size:1.6rem">🗂️</div><div><div style="font-weight:800;font-size:0.95rem">Idioms by Topic</div><div style="font-size:0.78rem;color:var(--muted);margin-top:2px">All 69 idioms grouped by lesson</div></div>';
-  d1.onmouseover = function(){ this.style.borderColor='var(--accent)'; };
-  d1.onmouseout  = function(){ this.style.borderColor=''; };
-  var d2 = document.createElement('a');
-  d2.href = 'idiom_alpha.html';
-  d2.style.cssText = 'flex:1;min-width:200px;display:flex;align-items:center;gap:12px;padding:16px 20px;background:var(--paper);border:2px solid var(--border);border-radius:16px;box-shadow:var(--shadow);text-decoration:none;color:inherit;transition:all 0.18s;font-family:inherit;';
-  d2.innerHTML = '<div style="font-size:1.6rem">🔤</div><div><div style="font-weight:800;font-size:0.95rem">Idioms A–Z</div><div style="font-size:0.78rem;color:var(--muted);margin-top:2px">All 69 idioms alphabetical</div></div>';
-  d2.onmouseover = function(){ this.style.borderColor='var(--accent)'; };
-  d2.onmouseout  = function(){ this.style.borderColor=''; };
-  dictRow.appendChild(d1);
-  dictRow.appendChild(d2);
-  list.appendChild(dictRow);
 
   ALL_LESSONS.forEach(function(lesson) {
     const enabled = settings[lesson.id] !== false; // default on
