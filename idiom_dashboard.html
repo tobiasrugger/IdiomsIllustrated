@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Idiom Island — Teacher Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1118; --paper: #fdf6e8; --warm: #f5ede0;
+  --accent: #d4570a; --accent2: #2a7a4b; --accent3: #1b5fa8; --accent4: #8b2fc9;
+  --muted: #7a6e65; --border: #e0d4c4; --card: #fffdf7;
+  --ok: #2a7a4b; --err: #c0392b;
+  --shadow: 0 4px 24px rgba(26,17,24,0.10);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+/* HEADER */
+header {
+  background: var(--ink); padding: 18px 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.logo { font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 900; color: var(--paper); }
+.logo em { color: var(--accent); font-style: normal; }
+.logo .sub { font-size: 0.75rem; color: #a89e96; text-transform: uppercase; letter-spacing: 1px; display: block; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.back-link { color: #a89e96; font-size: 0.82rem; font-weight: 700; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.2); }
+.back-link:hover { color: var(--paper); }
+
+/* LOGIN */
+.login-wrap { max-width: 400px; margin: 80px auto; padding: 0 20px; text-align: center; }
+.login-wrap h2 { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; }
+.login-wrap p { color: var(--muted); margin-bottom: 28px; }
+.pw-field { display: flex; gap: 8px; }
+.pw-field input {
+  flex: 1; padding: 12px 16px; border-radius: 10px;
+  border: 2px solid var(--border); background: #fff;
+  font-family: 'Nunito', sans-serif; font-size: 1rem; outline: none;
+  transition: border-color 0.15s;
+}
+.pw-field input:focus { border-color: var(--accent3); }
+.btn-primary {
+  padding: 12px 22px; border-radius: 10px; border: none;
+  background: var(--ink); color: var(--paper);
+  font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.95rem;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap;
+}
+.btn-primary:hover { background: var(--accent); }
+.err-msg { color: var(--err); font-size: 0.85rem; margin-top: 10px; font-weight: 700; min-height: 20px; }
+
+/* SCREEN TOGGLE */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* DASHBOARD LAYOUT */
+.dash-wrap { max-width: 1000px; margin: 0 auto; padding: 28px 20px; }
+
+/* SUMMARY CARDS */
+.summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.summary-card {
+  background: var(--card); border: 2px solid var(--border); border-radius: 16px;
+  padding: 20px; box-shadow: var(--shadow);
+}
+.summary-card .val { font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 900; line-height: 1; color: var(--ink); }
+.summary-card .lbl { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-top: 4px; }
+.summary-card.accent1 { border-color: var(--accent); }
+.summary-card.accent2 { border-color: var(--accent2); }
+.summary-card.accent3 { border-color: var(--accent3); }
+.summary-card.accent4 { border-color: var(--accent4); }
+
+/* TABS */
+.tab-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab-btn {
+  padding: 8px 18px; border-radius: 10px; border: 2px solid var(--border);
+  background: transparent; font-family: 'Nunito', sans-serif; font-weight: 700;
+  font-size: 0.88rem; cursor: pointer; transition: all 0.15s; color: var(--ink);
+}
+.tab-btn:hover { border-color: var(--ink); }
+.tab-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* SECTION TITLE */
+.section-title { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 14px; }
+
+/* STUDENT TABLE */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  text-align: left; font-size: 0.72rem; font-weight: 800; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--muted); padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+}
+.data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--warm); }
+.data-table .name-cell { font-weight: 800; }
+.score-pill {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 0.78rem; font-weight: 800;
+}
+.score-high { background: #e8f7ee; color: var(--ok); }
+.score-mid  { background: #fff3ec; color: var(--accent); }
+.score-low  { background: #fdf0f0; color: var(--err); }
+
+/* IDIOM HARDNESS BARS */
+.idiom-list { display: flex; flex-direction: column; gap: 8px; }
+.idiom-row { display: flex; align-items: center; gap: 12px; }
+.idiom-name { font-weight: 700; font-size: 0.88rem; width: 220px; flex-shrink: 0; }
+.bar-wrap { flex: 1; height: 10px; background: var(--border); border-radius: 10px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 10px; transition: width 0.6s ease; }
+.bar-err  { background: var(--err); }
+.bar-ok   { background: var(--ok); }
+.idiom-pct { font-size: 0.78rem; font-weight: 800; width: 40px; text-align: right; }
+
+/* ACTIVITY BREAKDOWN */
+.activity-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+.activity-card {
+  background: var(--card); border: 2px solid var(--border); border-radius: 14px;
+  padding: 18px; box-shadow: var(--shadow);
+}
+.activity-card h4 { font-family: 'Fraunces', serif; font-weight: 700; margin-bottom: 10px; font-size: 1rem; }
+.activity-stat { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.activity-stat:last-child { border-bottom: none; }
+.activity-stat .v { font-weight: 800; }
+
+/* RECENT FEED */
+.feed { display: flex; flex-direction: column; gap: 6px; }
+.feed-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 10px;
+  background: var(--card); border: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.feed-item .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.feed-item.ok .dot  { background: var(--ok); }
+.feed-item.err .dot { background: var(--err); }
+.feed-item .fi-name { font-weight: 800; width: 120px; flex-shrink: 0; }
+.feed-item .fi-idiom { flex: 1; color: var(--muted); }
+.feed-item .fi-act { font-size: 0.72rem; background: var(--warm); border-radius: 6px; padding: 2px 7px; font-weight: 700; }
+.feed-item .fi-time { font-size: 0.72rem; color: var(--muted); width: 80px; text-align: right; }
+
+/* CONTROLS ROW */
+.controls-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-select {
+  padding: 8px 12px; border-radius: 8px; border: 2px solid var(--border);
+  font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700;
+  background: var(--card); color: var(--ink); cursor: pointer; outline: none;
+}
+.filter-select:focus { border-color: var(--accent3); }
+.btn-refresh {
+  padding: 8px 16px; border-radius: 8px; border: 2px solid var(--border);
+  background: transparent; font-family: 'Nunito', sans-serif; font-weight: 700;
+  font-size: 0.85rem; cursor: pointer; transition: all 0.15s; color: var(--ink);
+}
+.btn-refresh:hover { border-color: var(--ink); }
+.loading { text-align: center; padding: 40px; color: var(--muted); font-style: italic; }
+.spin { display: inline-block; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media(max-width: 600px) {
+  .summary-row { grid-template-columns: 1fr 1fr; }
+  .idiom-name { width: 140px; font-size: 0.78rem; }
+  .feed-item .fi-name { width: 80px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Idiom <em>Island</em><span class="sub">Teacher Dashboard</span></div>
+  </div>
+  <div class="header-right">
+    <a href="index.html" class="back-link">← All Lessons</a>
+  </div>
+</header>
+
+<!-- LOGIN SCREEN -->
+<div id="screen-login" class="screen active">
+  <div class="login-wrap">
+    <h2>Teacher Login</h2>
+    <p>Enter the class password to view student data.</p>
+    <div class="pw-field">
+      <input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')tryLogin()">
+      <button class="btn-primary" onclick="tryLogin()">Enter</button>
+    </div>
+    <div id="pw-err" class="err-msg"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD SCREEN -->
+<div id="screen-dash" class="screen">
+  <div class="dash-wrap">
+
+    <!-- Summary -->
+    <div class="summary-row" id="summary-row">
+      <div class="summary-card accent1">
+        <div class="val" id="stat-students">—</div>
+        <div class="lbl">Students</div>
+      </div>
+      <div class="summary-card accent2">
+        <div class="val" id="stat-answers">—</div>
+        <div class="lbl">Total Answers</div>
+      </div>
+      <div class="summary-card accent3">
+        <div class="val" id="stat-accuracy">—</div>
+        <div class="lbl">Accuracy</div>
+      </div>
+      <div class="summary-card accent4">
+        <div class="val" id="stat-lessons">—</div>
+        <div class="lbl">Lessons Attempted</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-row">
+      <select class="filter-select" id="filter-lesson" onchange="applyFilters()">
+        <option value="">All Lessons</option>
+        <option value="body">Body Talk</option>
+        <option value="animals">Animal Kingdom</option>
+        <option value="money">Money Matters</option>
+        <option value="action">Action &amp; Attitude</option>
+        <option value="honesty">Truth &amp; Deception</option>
+        <option value="trouble">Trouble &amp; Safety</option>
+        <option value="wisdom">Wisdom &amp; Advice</option>
+      </select>
+      <select class="filter-select" id="filter-activity" onchange="applyFilters()">
+        <option value="">All Activities</option>
+        <option value="quiz">Picture Quiz</option>
+        <option value="listen">Listen &amp; See</option>
+        <option value="fillblank">Fill in Blank</option>
+        <option value="matching">Picture Match</option>
+      </select>
+      <button class="btn-refresh" onclick="loadData()">↻ Refresh</button>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="showTab('students')">By Student</button>
+      <button class="tab-btn" onclick="showTab('idioms')">Hardest Idioms</button>
+      <button class="tab-btn" onclick="showTab('activities')">By Activity</button>
+      <button class="tab-btn" onclick="showTab('recent')">Recent Answers</button>
+    </div>
+
+    <div id="tab-content">
+      <div class="loading"><span class="spin">⟳</span> Loading student data…</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPA_URL = 'https://lhmwtfyceilgndpygivj.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxobXd0ZnljZWlsZ25kcHlnaXZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMzk5MDIsImV4cCI6MjA5MTcxNTkwMn0.0uIXyctHMfTN4doWYn2JJ260swD5b-t0T-oDMSIPtBU';
+const PASSWORD = 'galileo2026';
+
+const LESSON_NAMES = {
+  body:'Body Talk', animals:'Animal Kingdom', money:'Money Matters',
+  action:'Action & Attitude', honesty:'Truth & Deception',
+  trouble:'Trouble & Safety', wisdom:'Wisdom & Advice'
+};
+const ACT_NAMES = { quiz:'Picture Quiz', listen:'Listen & See', fillblank:'Fill in Blank', matching:'Picture Match' };
+
+let allData = [];
+let filteredData = [];
+let currentTab = 'students';
+
+// LOGIN
+function tryLogin() {
+  const val = document.getElementById('pw-input').value;
+  if (val === PASSWORD) {
+    document.getElementById('screen-login').classList.remove('active');
+    document.getElementById('screen-dash').classList.add('active');
+    loadData();
+  } else {
+    document.getElementById('pw-err').textContent = 'Incorrect password.';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+// LOAD DATA
+async function loadData() {
+  document.getElementById('tab-content').innerHTML = '<div class="loading"><span class="spin">⟳</span> Loading…</div>';
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/idiom_answers?select=*&order=created_at.desc&limit=2000', {
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY }
+    });
+    allData = await res.json();
+    applyFilters();
+  } catch(e) {
+    document.getElementById('tab-content').innerHTML = '<div class="loading">Error loading data. Check console.</div>';
+    console.error(e);
+  }
+}
+
+function applyFilters() {
+  const lesson   = document.getElementById('filter-lesson').value;
+  const activity = document.getElementById('filter-activity').value;
+  filteredData = allData.filter(r =>
+    (!lesson   || r.lesson   === lesson) &&
+    (!activity || r.activity === activity)
+  );
+  updateSummary();
+  renderTab(currentTab);
+}
+
+function updateSummary() {
+  const d = filteredData;
+  const students = new Set(d.map(r => r.student_name)).size;
+  const correct  = d.filter(r => r.is_correct).length;
+  const lessons  = new Set(d.map(r => r.student_name + '|' + r.lesson)).size;
+  document.getElementById('stat-students').textContent = students;
+  document.getElementById('stat-answers').textContent  = d.length;
+  document.getElementById('stat-accuracy').textContent = d.length ? Math.round(correct/d.length*100)+'%' : '—';
+  document.getElementById('stat-lessons').textContent  = lessons;
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['students','idioms','activities','recent'][i] === tab);
+  });
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  const el = document.getElementById('tab-content');
+  if      (tab === 'students')   el.innerHTML = renderStudents();
+  else if (tab === 'idioms')     el.innerHTML = renderIdioms();
+  else if (tab === 'activities') el.innerHTML = renderActivities();
+  else if (tab === 'recent')     el.innerHTML = renderRecent();
+}
+
+// ── BY STUDENT ──
+function renderStudents() {
+  const d = filteredData;
+  if (!d.length) return '<div class="loading">No data yet.</div>';
+
+  // Group by student
+  const students = {};
+  d.forEach(r => {
+    if (!students[r.student_name]) students[r.student_name] = { total:0, correct:0, lessons:new Set(), activities:new Set() };
+    const s = students[r.student_name];
+    s.total++;
+    if (r.is_correct) s.correct++;
+    s.lessons.add(r.lesson);
+    s.activities.add(r.activity);
+  });
+
+  const rows = Object.entries(students)
+    .sort((a,b) => b[1].total - a[1].total)
+    .map(([name, s]) => {
+      const pct = Math.round(s.correct/s.total*100);
+      const cls = pct>=80?'score-high':pct>=60?'score-mid':'score-low';
+      return `<tr>
+        <td class="name-cell">${name}</td>
+        <td>${s.total}</td>
+        <td>${s.correct}</td>
+        <td><span class="score-pill ${cls}">${pct}%</span></td>
+        <td>${[...s.lessons].map(l=>LESSON_NAMES[l]||l).join(', ')}</td>
+      </tr>`;
+    }).join('');
+
+  return `
+    <div class="section-title">Student Performance</div>
+    <div style="overflow-x:auto">
+    <table class="data-table">
+      <thead><tr>
+        <th>Student</th><th>Answers</th><th>Correct</th><th>Accuracy</th><th>Lessons</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    </div>`;
+}
+
+// ── HARDEST IDIOMS ──
+function renderIdioms() {
+  const d = filteredData;
+  if (!d.length) return '<div class="loading">No data yet.</div>';
+
+  const idioms = {};
+  d.forEach(r => {
+    if (!idioms[r.idiom]) idioms[r.idiom] = { total:0, wrong:0 };
+    idioms[r.idiom].total++;
+    if (!r.is_correct) idioms[r.idiom].wrong++;
+  });
+
+  const sorted = Object.entries(idioms)
+    .filter(([,v]) => v.total >= 2)
+    .sort((a,b) => (b[1].wrong/b[1].total) - (a[1].wrong/a[1].total))
+    .slice(0, 20);
+
+  if (!sorted.length) return '<div class="loading">Not enough data yet.</div>';
+
+  const bars = sorted.map(([idiom, v]) => {
+    const errPct = Math.round(v.wrong/v.total*100);
+    return `<div class="idiom-row">
+      <div class="idiom-name" title="${idiom}">${idiom.length>28?idiom.slice(0,26)+'…':idiom}</div>
+      <div class="bar-wrap"><div class="bar-fill bar-err" style="width:${errPct}%"></div></div>
+      <div class="idiom-pct" style="color:var(--err)">${errPct}%</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="section-title">Hardest Idioms <span style="font-family:'Nunito';font-size:0.8rem;font-weight:600;color:var(--muted)">(% wrong answers)</span></div>
+    <div class="idiom-list">${bars}</div>`;
+}
+
+// ── BY ACTIVITY ──
+function renderActivities() {
+  const d = filteredData;
+  if (!d.length) return '<div class="loading">No data yet.</div>';
+
+  const acts = {};
+  d.forEach(r => {
+    if (!acts[r.activity]) acts[r.activity] = { total:0, correct:0, students:new Set() };
+    acts[r.activity].total++;
+    if (r.is_correct) acts[r.activity].correct++;
+    acts[r.activity].students.add(r.student_name);
+  });
+
+  const cards = Object.entries(acts).map(([act, v]) => {
+    const pct = Math.round(v.correct/v.total*100);
+    const cls = pct>=80?'score-high':pct>=60?'score-mid':'score-low';
+    return `<div class="activity-card">
+      <h4>${ACT_NAMES[act]||act}</h4>
+      <div class="activity-stat"><span>Answers</span><span class="v">${v.total}</span></div>
+      <div class="activity-stat"><span>Correct</span><span class="v">${v.correct}</span></div>
+      <div class="activity-stat"><span>Accuracy</span><span class="v"><span class="score-pill ${cls}">${pct}%</span></span></div>
+      <div class="activity-stat"><span>Students</span><span class="v">${v.students.size}</span></div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="section-title">Activity Breakdown</div>
+    <div class="activity-grid">${cards}</div>`;
+}
+
+// ── RECENT ──
+function renderRecent() {
+  const d = filteredData.slice(0, 60);
+  if (!d.length) return '<div class="loading">No data yet.</div>';
+
+  const items = d.map(r => {
+    const t = new Date(r.created_at);
+    const time = t.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) + ' ' + t.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const cls = r.is_correct ? 'ok' : 'err';
+    const chosen = r.chosen && r.chosen !== r.idiom ? ` → chose "${r.chosen}"` : '';
+    return `<div class="feed-item ${cls}">
+      <div class="dot"></div>
+      <div class="fi-name">${r.student_name}</div>
+      <div class="fi-idiom">${r.idiom}${chosen}</div>
+      <div class="fi-act">${ACT_NAMES[r.activity]||r.activity}</div>
+      <div class="fi-time">${time}</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="section-title">Recent Answers <span style="font-family:'Nunito';font-size:0.8rem;font-weight:600;color:var(--muted)">(last 60)</span></div>
+    <div class="feed">${items}</div>`;
+}
+</script>
+</body>
+</html>
