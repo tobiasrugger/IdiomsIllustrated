@@ -164,7 +164,7 @@ a.lesson-link{text-decoration:none;color:inherit;display:flex;align-items:center
 <main>
 
   <!-- WHAT IS AN IDIOM? -->
-  <div id="what-is-idiom" style="display:none;background:var(--warm);border:2px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:24px;box-shadow:0 4px 16px rgba(0,0,0,0.06)">
+  <div id="what-is-idiom" style="max-width:860px;margin-left:auto;margin-right:auto;background:var(--warm);border:2px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:24px;box-shadow:0 4px 16px rgba(0,0,0,0.06)">
     <div style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:900;color:var(--ink);margin-bottom:12px">🤔 What is an idiom?</div>
     <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px">
       <div style="flex-shrink:0;text-align:center">
@@ -178,7 +178,7 @@ a.lesson-link{text-decoration:none;color:inherit;display:flex;align-items:center
         <p style="font-weight:800;color:var(--accent);font-size:0.82rem">💬 Can you think of an idiom from your country?</p>
       </div>
     </div>
-    <div id="idiom-what-trans" style="display:none;background:#fff;border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent);font-size:0.84rem;line-height:1.65;color:var(--ink)">
+    <div id="idiom-what-trans" style="display:none;background:#fff;border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent);font-size:0.84rem;line-height:1.65;color:var(--ink);margin-top:10px">
       <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px" id="idiom-what-trans-lang"></div>
       <div id="idiom-what-trans-text"><span style="display:inline-block;animation:spin 1s linear infinite">⟳</span> Translating…</div>
     </div>
@@ -364,6 +364,7 @@ window.addEventListener('load', function() {
     document.getElementById('login-overlay').style.display = 'none';
     showHeader();
     renderLessons();
+    showIdiomWhat(studentLang);
   } else {
     // Pre-fill if partial data
     if (studentName) document.getElementById('login-name').value = studentName;
