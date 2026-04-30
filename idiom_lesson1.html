@@ -648,11 +648,14 @@ function renderFlashcards(idioms){
     +'<p>All '+idioms.length+' idioms in this lesson. Scroll to review.</p></div>'
     +'<div class="vocab-scroll-grid">'+cardsHtml+'</div>';
 
-  // Load translations sequentially to avoid rate limit
+  // Load translations in batches of 3
   (async function(){
-    for (var i = 0; i < idioms.length; i++) {
-      await loadTrans(idioms[i].idiom, idioms[i].meaning, 'trans-fc-'+idioms[i].idiom.replace(/ /g,'_'));
-      await new Promise(function(r){ setTimeout(r, 300); });
+    var BATCH = 3;
+    for (var i = 0; i < idioms.length; i += BATCH) {
+      var batch = idioms.slice(i, i + BATCH);
+      await Promise.all(batch.map(function(item){
+        return loadTrans(item.idiom, item.meaning, 'trans-fc-'+item.idiom.replace(/ /g,'_'));
+      }));
     }
   })();
 }

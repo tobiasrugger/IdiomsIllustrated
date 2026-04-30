@@ -1169,11 +1169,13 @@ function renderTrans(panel, t) {
 
 async function translateAll() {
   if (!currentLang) { alert('Please select a language first.'); return; }
-  for (var i = 0; i < ALL_IDIOMS.length; i++) {
-    var item = ALL_IDIOMS[i];
-    var iid = item.idiom.replace(/[^a-zA-Z0-9]/g, '_');
-    await fetchAndShow(item.idiom, item.meaning, 'trans-' + iid);
-    await new Promise(function(r){ setTimeout(r, 80); });
+  var BATCH = 3;
+  for (var i = 0; i < ALL_IDIOMS.length; i += BATCH) {
+    var batch = ALL_IDIOMS.slice(i, i + BATCH);
+    await Promise.all(batch.map(function(item) {
+      var iid = item.idiom.replace(/[^a-zA-Z0-9]/g, '_');
+      return fetchAndShow(item.idiom, item.meaning, 'trans-' + iid);
+    }));
   }
 }
 
