@@ -663,9 +663,10 @@ function renderFlashcards(idioms){
   const m=document.getElementById("main");
   const idx=fcState.idx, item=idioms[idx];
   const imgSrc=IMAGES[item.idiom]||'';
+  const imgHtml=imgSrc?'<img class="fc-img" src="'+imgSrc+'" alt="'+item.idiom+'">':'';
   const isLast=idx===idioms.length-1;
   m.innerHTML=`
-    <div class="section-head"><h1>${currentSet.name} — Flashcards</h1><p>Tap a card to hear it. Use Next to move forward.</p></div>
+    <div class="section-head"><h1>${currentSet.name} — Learn Vocabulary</h1><p>Study each idiom, its meaning, and example. Use the buttons to track your progress.</p></div>
     <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
     <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
       <div style="font-size:0.85rem;font-weight:600;color:var(--muted)">${idx+1} of ${idioms.length}</div>
@@ -687,11 +688,13 @@ function renderFlashcards(idioms){
       </div>
       <div class="btn-row">
         <button class="btn-secondary" onclick="fcState.idx=(fcState.idx-1+${idioms.length})%${idioms.length};renderFlashcards(currentSet.idioms)" ${idx===0?'disabled':''}>◀ Back</button>
-        <button class="btn-primary" onclick="fcState.idx=(fcState.idx+1)%${idioms.length};renderFlashcards(currentSet.idioms)">${isLast?'Restart':'Next ▶'}</button>
+        <button class="btn-primary" onclick="fcState.idx=(fcState.idx+1)%${idioms.length};renderFlashcards(currentSet.idioms)">${isLast?'Restart ↺':'Next ▶'}</button>
       </div>
     </div>`;
   loadTrans(item.idiom, item.meaning, 'trans-fc');
 }
+
+
 
 // ── PICTURE QUIZ ──
 function renderQuiz(idioms){
@@ -750,32 +753,33 @@ function renderListen(idioms){
     const opts=shuffle(idioms.filter(function(i){return i.idiom!==correct.idiom;})).slice(0,3).concat([correct]);
     const shuffled=shuffle(opts);
     let answered=false;
-    const imgSrc=IMAGES[correct.idiom]||"";
-    const imgHtml=imgSrc?"<img class=\"quiz-img\" src=\""+imgSrc+"\" alt=\""+correct.idiom+"\" style=\"max-width:100%;height:180px;object-fit:contain;display:block;margin:0 auto 12px\">":"";
-    const optsHtml=shuffled.map(function(o,i){
-      var oImg=IMAGES[o.idiom]?"<img src=\""+IMAGES[o.idiom]+"\" alt=\"idiom picture\" style=\"width:100%;height:110px;object-fit:contain;border-radius:6px;background:#fff;margin-bottom:4px\">":"";
-      return "<div class=\"listen-opt\" id=\"lopt"+i+"\" onclick=\"listenAnswer(&apos;"+esc(o.idiom)+"&apos;,&apos;"+esc(correct.idiom)+"&apos;,this)\" style=\"padding:8px\">"+oImg+"<div style=\"font-size:0.78rem;font-weight:700;text-align:center\">"+o.idiom+"</div></div>";
-    }).join("");
     const restLabel=idx===idioms.length-1?"Restart 🔄":"Next ▶";
+    // Each option shows ONLY the picture — no idiom name, no translation (too easy)
+    const optsHtml=shuffled.map(function(o,i){
+      var oImg=IMAGES[o.idiom]
+        ?"<img src=\""+IMAGES[o.idiom]+"\" alt=\"idiom picture\" style=\"width:100%;height:110px;object-fit:contain;border-radius:6px;background:#fff\">"
+        :"<div style=\"width:100%;height:110px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:#aaa;font-style:italic\">no image</div>";
+      return "<div class=\"listen-opt\" id=\"lopt"+i+"\" onclick=\"listenAnswer(&apos;"+esc(o.idiom)+"&apos;,&apos;"+esc(correct.idiom)+"&apos;,this)\" style=\"padding:8px;cursor:pointer\">"+oImg+"</div>";
+    }).join("");
     m.innerHTML=
-      "<div class=\"section-head\"><h1>"+currentSet.name+" — Listen &amp; See</h1><p>Listen to the idiom, then find the matching picture.</p></div>"
+      "<div class=\"section-head\"><h1>"+currentSet.name+" — Listen &amp; See</h1><p>🔊 Listen to the idiom, then click the matching picture.</p></div>"
       +"<div class=\"prog-wrap\"><div class=\"prog-bar\" style=\"width:"+((idx+1)/idioms.length*100)+"%\"></div></div>"
       +"<div class=\"score-badge\">Question "+(idx+1)+" / "+idioms.length+" · Score: "+listenState.score+"</div>"
       +"<div class=\"listen-card\">"
-      +"<div class=\"idiom-header\"><div class=\"idiom-title\">"+correct.idiom+"</div>"
-      +"<button class=\"icon-speak\" onclick=\"speak('"+esc(correct.idiom)+"')\" title=\"Hear it\">🔊</button></div>"
-      +transPanel(correct.idiom, correct.meaning, "trans-listen")
+      +"<div style=\"text-align:center;margin-bottom:16px\">"
+      +"<button class=\"btn-primary\" onclick=\"speak('"+esc(correct.idiom)+"')\" style=\"font-size:1.1rem;padding:12px 28px\">🔊 Play Again</button>"
+      +"</div>"
       +"<div class=\"listen-opts\" style=\"grid-template-columns:1fr 1fr\">"+optsHtml+"</div>"
       +"<div class=\"listen-fb\" id=\"lfb\"></div>"
       +"<div id=\"lnext\" style=\"display:none;margin-top:14px\">"
       +"<button class=\"btn-primary\" onclick=\"listenState.idx=(listenState.idx+1)%"+idioms.length+";if(listenState.idx===0)listenState.score=0;renderListen(currentSet.idioms)\">"+restLabel+"</button>"
       +"</div></div>";
-    loadTrans(correct.idiom, correct.meaning, "trans-listen");
     setTimeout(function(){speak(correct.idiom);},500);
     window.listenAnswer=function(chosen,correct2,el){
       if(answered)return; answered=true;
       if(chosen===correct2){
         el.classList.add("correct","pop");
+        el.innerHTML+="<div style=\"font-size:0.78rem;font-weight:800;text-align:center;margin-top:4px;color:var(--ok)\">"+chosen+"</div>";
         document.getElementById("lfb").innerHTML="<span class=\"ok\">✅ Correct!</span>";
         listenState.score++; saveAnswer("listen",correct.idiom,chosen,correct2,true);
         setTimeout(function(){ document.getElementById("lnext").style.display="block"; }, 800);
@@ -783,12 +787,14 @@ function renderListen(idioms){
         el.classList.add("wrong");
         saveAnswer("listen",correct.idiom,chosen,correct2,false);
         document.getElementById("lfb").innerHTML="<span class=\"err\">❌ Try again!</span>";
-        setTimeout(function(){ answered=false; el.classList.remove("wrong"); document.getElementById("lfb").innerHTML=""; }, 800);
+        setTimeout(function(){ answered=false; el.classList.remove("wrong"); document.getElementById("lfb").innerHTML=""; }, 900);
       }
     };
   }
   render();
 }
+
+
 
 
 // ── FILL IN BLANK ──
