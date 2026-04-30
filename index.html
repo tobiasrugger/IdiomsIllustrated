@@ -166,17 +166,20 @@ a.lesson-link{text-decoration:none;color:inherit;display:flex;align-items:center
   <!-- WHAT IS AN IDIOM? -->
   <div id="what-is-idiom" style="max-width:860px;margin-left:auto;margin-right:auto;background:var(--warm);border:2px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:24px;box-shadow:0 4px 16px rgba(0,0,0,0.06)">
     <div style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:900;color:var(--ink);margin-bottom:12px">🤔 What is an idiom?</div>
-    <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px">
-      <div style="flex-shrink:0;text-align:center">
-        <div style="font-size:3rem;line-height:1;margin-bottom:4px">🌧️🐱🐶</div>
-        <div style="font-size:0.7rem;color:var(--muted);font-style:italic;max-width:120px">"It's raining cats and dogs"</div>
+    <div style="margin-bottom:14px;font-size:0.84rem;line-height:1.65;color:var(--ink)">
+      <div style="float:left;text-align:center;margin:2px 14px 8px 0">
+        <div style="font-size:2.6rem;line-height:1;margin-bottom:3px">🌧️🐱🐶</div>
+        <div style="font-size:0.72rem;font-style:italic;font-weight:700;color:var(--ink);background:#fff;border:2px solid var(--border);border-radius:12px;padding:5px 8px;max-width:110px;position:relative;margin-top:6px">
+          "It's raining cats and dogs"
+          <div style="position:absolute;bottom:-9px;right:10px;width:0;height:0;border-top:9px solid var(--border);border-left:9px solid transparent"></div>
+          <div style="position:absolute;bottom:-6px;right:11px;width:0;height:0;border-top:7px solid #fff;border-left:7px solid transparent"></div>
+        </div>
       </div>
-      <div style="flex:1;min-width:220px;font-size:0.84rem;line-height:1.65;color:var(--ink)">
-        <p style="margin-bottom:8px">An idiom is a phrase or expression that is playful, expressive, creative, and sometimes silly — something that people in a culture use with each other.</p>
-        <p style="margin-bottom:8px">An idiom can be confusing to people learning English because you often cannot translate it exactly. <strong>"It's raining cats and dogs"</strong> means <strong>"It's raining a lot."</strong> It does not mean animals are literally falling from the sky!</p>
-        <p style="margin-bottom:8px">Why do different cultures have idioms? Maybe to make talking more interesting — a more fun, visual way to talk about everyday things.</p>
-        <p style="font-weight:800;color:var(--accent);font-size:0.82rem">💬 Can you think of an idiom from your country?</p>
-      </div>
+      <p style="margin-bottom:8px">An idiom is a phrase or expression that is playful, expressive, creative, and sometimes silly — something that people in a culture use with each other.</p>
+      <p style="margin-bottom:8px">An idiom can be confusing to people learning English because you often cannot translate it exactly. <strong>"It's raining cats and dogs"</strong> means <strong>"It's raining a lot."</strong> It does not mean animals are literally falling from the sky!</p>
+      <p style="margin-bottom:8px">Why do different cultures have idioms? Maybe to make talking more interesting — a more fun, visual way to talk about everyday things.</p>
+      <p style="font-weight:800;color:var(--accent);font-size:0.82rem">💬 Can you think of an idiom from your country?</p>
+      <div style="clear:both"></div>
     </div>
     <div id="idiom-what-trans" style="display:none;background:#fff;border-radius:10px;padding:12px 14px;border-left:3px solid var(--accent);font-size:0.84rem;line-height:1.65;color:var(--ink);margin-top:10px">
       <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:4px" id="idiom-what-trans-lang"></div>
@@ -385,7 +388,7 @@ function showIdiomWhat(lang) {
   if (!transDiv) return;
   transDiv.style.display = 'block';
   if (langLabel) langLabel.textContent = lang;
-  var meaning = "An idiom is a playful, expressive phrase that a culture uses. You cannot always translate it exactly. For example, raining cats and dogs means raining a lot — not animals falling from the sky. Different cultures have idioms to make talking more interesting and visual. Can you think of an idiom from your country?";
+  var meaning = "An idiom is a fun, playful phrase. You cannot translate it word for word. Example: raining cats and dogs means raining a lot. Can you think of an idiom from your country?";
   var params = new URLSearchParams({ action:'translate', idiom:'What is an idiom?', meaning: meaning, lang: lang });
   fetch('https://script.google.com/macros/s/AKfycbwbFr3oopIITlxKDhI5wGhEZdomWc3tmB5ZSK6NpBVisPAz-CMA4uKiruXDkCEU3T0Q/exec?' + params, { method:'GET', redirect:'follow' })
     .then(function(r){ return r.json(); })
