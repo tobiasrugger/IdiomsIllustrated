@@ -709,7 +709,7 @@ function renderQuiz(idioms){
         el.classList.add("correct","pop");
         document.getElementById("qfb").innerHTML="<span class=\"ok\">✅ Correct!</span>";
         quizState.score++; speak(correct.idiom); saveAnswer("quiz",correct.idiom,chosen,correct2,true);
-        setTimeout(function(){ document.getElementById("qnext").style.display="block"; }, 800);
+        setTimeout(function(){ quizState.idx=(quizState.idx+1)%idioms.length; if(quizState.idx===0)quizState.score=0; renderQuiz(currentSet.idioms); }, 1200);
       } else {
         el.classList.add("wrong");
         saveAnswer("quiz",correct.idiom,chosen,correct2,false);
@@ -758,7 +758,7 @@ function renderListen(idioms){
         el.innerHTML+="<div style=\"font-size:0.78rem;font-weight:800;text-align:center;margin-top:4px;color:var(--ok)\">"+chosen+"</div>";
         document.getElementById("lfb").innerHTML="<span class=\"ok\">✅ Correct!</span>";
         listenState.score++; saveAnswer("listen",correct.idiom,chosen,correct2,true);
-        setTimeout(function(){ document.getElementById("lnext").style.display="block"; }, 800);
+        setTimeout(function(){ listenState.idx=(listenState.idx+1)%idioms.length; if(listenState.idx===0)listenState.score=0; renderListen(currentSet.idioms); }, 1200);
       } else {
         el.classList.add("wrong");
         saveAnswer("listen",correct.idiom,chosen,correct2,false);
@@ -815,7 +815,7 @@ function renderFillBlank(idioms){
         document.getElementById("blankspot").textContent=chosen;
         document.getElementById("ffb").innerHTML="<span class=\"ok\">✅ Correct!</span>";
         fitbState.score++; saveAnswer("fillblank",correct.idiom,chosen,correct2,true);
-        setTimeout(function(){ document.getElementById("fnext").style.display="block"; }, 800);
+        setTimeout(function(){ fitbState.idx=(fitbState.idx+1)%idioms.length; if(fitbState.idx===0)fitbState.score=0; renderFillBlank(currentSet.idioms); }, 1200);
       } else {
         saveAnswer("fillblank",correct.idiom,chosen,correct2,false);
         document.getElementById("ffb").innerHTML="<span class=\"err\">❌ Try again!</span>";
