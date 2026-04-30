@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Idiom Island — Wisdom & Advice</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -256,13 +259,36 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .tip.tapped::after, .tip.tapped::before { opacity: 1; }
 
 </style>
+
+<style>
+.vocab-scroll-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-top: 4px;
+}
+@media(max-width:560px){
+  .vocab-scroll-grid { grid-template-columns: 1fr; }
+}
+.vocab-scroll-card {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+</style>
 <style>
 .top-nav{display:flex;gap:6px;padding:12px 20px;background:var(--warm);border-bottom:2px solid var(--border);flex-wrap:wrap;}
 .act-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:2px solid var(--border);background:var(--paper);font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;color:var(--muted);transition:all 0.15s;}
 .act-btn:hover{border-color:#2c6e49;color:#2c6e49;}
 .act-btn.active{background:#2c6e49;border-color:#2c6e49;color:#fff;}
-.main{padding:24px 20px;max-width:780px;margin:0 auto;}
-</style></head><body>
+.main{padding:24px 20px;max-width:900px;margin:0 auto;}
+</style>
+</head>
+<body>
 <header>
   <div><div class="logo">Idiom <em>Island</em> <span style="font-size:1rem;opacity:0.6">✦ Wisdom & Advice</span></div>
   <div class="tagline"><a href="index.html" style="color:#c9b8a8;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.2)">← All Lessons</a></div></div>
@@ -270,15 +296,19 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
     <select id="langpick" onchange="setLanguage(this.value)">
       <option value="">— none —</option>
-      <option value="Spanish">Spanish</option><option value="Cantonese">Cantonese</option><option value="Mandarin">Mandarin</option><option value="Arabic">Arabic</option><option value="Vietnamese">Vietnamese</option><option value="Russian">Russian</option><option value="Darija">Darija (Moroccan Arabic)</option><option value="Urdu">Urdu</option><option value="Tagalog">Tagalog</option><option value="French">French</option></select>
+      <option value="Spanish">Spanish</option><option value="Cantonese">Cantonese</option>
+      <option value="Mandarin">Mandarin</option><option value="Arabic">Arabic</option>
+      <option value="Vietnamese">Vietnamese</option><option value="Russian">Russian</option>
+      <option value="Darija">Darija (Moroccan Arabic)</option><option value="Urdu">Urdu</option>
+      <option value="Tagalog">Tagalog</option><option value="French">French</option></select>
   </div>
 </header>
 <nav class="top-nav">
   <button class="act-btn active" id="btn-flashcards" onclick="selectActivity('flashcards')">1 — Learn Vocabulary</button>
-  <button class="act-btn" id="btn-quiz" onclick="selectActivity('quiz')">2 — Picture Quiz</button>
-  <button class="act-btn" id="btn-listen" onclick="selectActivity('listen')">3 — Listen &amp; See</button>
-  <button class="act-btn" id="btn-fillblank" onclick="selectActivity('fillblank')">4 — Fill in the Blank</button>
-  <button class="act-btn" id="btn-matching" onclick="selectActivity('matching')">5 — Picture Match</button>
+  <button class="act-btn" id="btn-quiz"       onclick="selectActivity('quiz')">2 — Picture Quiz</button>
+  <button class="act-btn" id="btn-listen"     onclick="selectActivity('listen')">3 — Listen &amp; See</button>
+  <button class="act-btn" id="btn-fillblank"  onclick="selectActivity('fillblank')">4 — Fill in the Blank</button>
+  <button class="act-btn" id="btn-matching"   onclick="selectActivity('matching')">5 — Picture Match</button>
 </nav>
 <main class="main" id="main"></main>
 <script>
@@ -640,39 +670,38 @@ async function showMatchTrans(idiom, meaning) {
 
 // ── FLASHCARDS ──
 function renderFlashcards(idioms){
-  const m=document.getElementById("main");
-  const idx=fcState.idx, item=idioms[idx];
-  const imgSrc=IMAGES[item.idiom]||'';
-  const imgHtml=imgSrc?'<img class="fc-img" src="'+imgSrc+'" alt="'+item.idiom+'">':'';
-  const isLast=idx===idioms.length-1;
-  m.innerHTML=`
-    <div class="section-head"><h1>${currentSet.name} — Learn Vocabulary</h1><p>Study each idiom, its meaning, and example. Use the buttons to track your progress.</p></div>
-    <div class="prog-wrap"><div class="prog-bar" style="width:${((idx+1)/idioms.length)*100}%"></div></div>
-    <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
-      <div style="font-size:0.85rem;font-weight:600;color:var(--muted)">${idx+1} of ${idioms.length}</div>
-      <div class="fc-card" id="fc">
-        ${imgHtml}
-        <div class="fc-body">
-          <div class="idiom-header">
-            <div class="idiom-title">${item.idiom}</div>
-            <button class="icon-speak" onclick="speak('${esc(item.idiom)}')" title="Hear it">🔊</button>
-          </div>
-          <div class="fc-meaning" style="display:block;font-size:1rem;font-weight:700;color:var(--accent2);margin:8px 0 4px">= ${item.meaning}</div>
-          ${transPanel(item.idiom, item.meaning, 'trans-fc')}
-          <div class="fc-example" style="font-size:0.88rem;color:var(--muted);font-style:italic;margin-bottom:10px">"${item.example}"</div>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn-secondary" onclick="mastery['${esc(item.idiom)}']='learning';this.style.background='#fff3ec'">Still learning</button>
-        <button class="btn-secondary" onclick="mastery['${esc(item.idiom)}']='mastered';this.style.background='#e8f7ee'">✅ Got it!</button>
-      </div>
-      <div class="btn-row">
-        <button class="btn-secondary" onclick="fcState.idx=(fcState.idx-1+${idioms.length})%${idioms.length};renderFlashcards(currentSet.idioms)" ${idx===0?'disabled':''}>◀ Back</button>
-        <button class="btn-primary" onclick="fcState.idx=(fcState.idx+1)%${idioms.length};renderFlashcards(currentSet.idioms)">${isLast?'Restart ↺':'Next ▶'}</button>
-      </div>
-    </div>`;
-  loadTrans(item.idiom, item.meaning, 'trans-fc');
+  const m = document.getElementById("main");
+
+  // Build all cards
+  const cardsHtml = idioms.map(function(item){
+    const imgSrc = IMAGES[item.idiom] || '';
+    const imgHtml = imgSrc
+      ? '<img class="fc-img" src="'+imgSrc+'" alt="'+item.idiom+'" style="width:100%;max-height:180px;object-fit:contain;border-radius:10px;background:#f9f5ef;padding:6px;margin-bottom:10px">'
+      : '';
+    return '<div class="vocab-scroll-card">'
+      + imgHtml
+      + '<div class="idiom-header" style="margin-bottom:6px">'
+      +   '<div class="idiom-title" style="font-size:1rem">'+item.idiom+'</div>'
+      +   '<button class="icon-speak" onclick="speak(\''+esc(item.idiom)+'\')" title="Hear it">🔊</button>'
+      + '</div>'
+      + '<div style="display:block;font-size:0.88rem;font-weight:700;color:var(--accent2);margin-bottom:4px">'+item.meaning+'</div>'
+      + '<div style="font-size:0.8rem;color:var(--muted);font-style:italic;margin-bottom:8px">"'+item.example+'"</div>'
+      + transPanel(item.idiom, item.meaning, 'trans-fc-'+item.idiom.replace(/ /g,'_'))
+      + '</div>';
+  }).join('');
+
+  m.innerHTML =
+    '<div class="section-head"><h1>'+currentSet.name+' — Learn Vocabulary</h1>'
+    +'<p>All '+idioms.length+' idioms in this lesson. Scroll to review.</p></div>'
+    +'<div class="vocab-scroll-grid">'+cardsHtml+'</div>';
+
+  // Load translations for all cards
+  idioms.forEach(function(item){
+    loadTrans(item.idiom, item.meaning, 'trans-fc-'+item.idiom.replace(/ /g,'_'));
+  });
 }
+
+
 
 
 
@@ -924,10 +953,10 @@ function renderActivity(){
   const idioms=currentSet.idioms;
   switch(currentActivity){
     case 'flashcards': renderFlashcards(idioms); break;
-    case 'quiz': renderQuiz(idioms); break;
-    case 'listen': renderListen(idioms); break;
-    case 'fillblank': renderFillBlank(idioms); break;
-    case 'matching': renderMatching(idioms); break;
+    case 'quiz':       renderQuiz(idioms); break;
+    case 'listen':     renderListen(idioms); break;
+    case 'fillblank':  renderFillBlank(idioms); break;
+    case 'matching':   renderMatching(idioms); break;
     default: renderFlashcards(idioms);
   }
 }
@@ -936,4 +965,6 @@ function renderActivity(){
   if(lang){currentLang=lang; const sel=document.getElementById('langpick'); if(sel) sel.value=lang;}
   renderActivity();
 })();
-</script></body></html>
+</script>
+</body>
+</html>
