@@ -1,9 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Idiom Island — Body Talk</title>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Idiom Island — Body Talk</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -258,57 +254,22 @@ header { justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .tip:focus::after, .tip:focus::before,
 .tip.tapped::after, .tip.tapped::before { opacity: 1; }
 
-</style>
-
-<style>
-.vocab-scroll-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-  margin-top: 4px;
-}
-@media(max-width:560px){
-  .vocab-scroll-grid { grid-template-columns: 1fr; }
-}
-.vocab-scroll-card {
-  background: var(--card);
-  border: 2px solid var(--border);
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-}
-</style>
-<style>
-.top-nav{display:flex;gap:6px;padding:12px 20px;background:var(--warm);border-bottom:2px solid var(--border);flex-wrap:wrap;}
-.act-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:2px solid var(--border);background:var(--paper);font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;color:var(--muted);transition:all 0.15s;}
-.act-btn:hover{border-color:#d4570a;color:#d4570a;}
-.act-btn.active{background:#d4570a;border-color:#d4570a;color:#fff;}
-.main{padding:24px 20px;max-width:900px;margin:0 auto;}
-</style>
-</head>
-<body>
+</style><style>.vocab-scroll-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:4px;}@media(max-width:560px){.vocab-scroll-grid{grid-template-columns:1fr;}}.vocab-scroll-card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;}</style>
+<style>.top-nav{display:flex;gap:6px;padding:12px 20px;background:var(--warm);border-bottom:2px solid var(--border);flex-wrap:wrap;}.act-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;border:2px solid var(--border);background:var(--paper);font-family:"Nunito",sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;color:var(--muted);transition:all 0.15s;}.act-btn:hover{border-color:#d4570a;color:#d4570a;}.act-btn.active{background:#d4570a;border-color:#d4570a;color:#fff;}.main{padding:24px 20px;max-width:900px;margin:0 auto;}</style></head><body>
 <header>
   <div><div class="logo">Idiom <em>Island</em> <span style="font-size:1rem;opacity:0.6">✦ Body Talk</span></div>
   <div class="tagline"><a href="index.html" style="color:#c9b8a8;text-decoration:none;font-size:0.82rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.2)">← All Lessons</a></div></div>
-  <div class="lang-selector">
-    <label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
-    <select id="langpick" onchange="setLanguage(this.value)">
-      <option value="">— none —</option>
-      <option value="Spanish">Spanish</option><option value="Cantonese">Cantonese</option>
-      <option value="Mandarin">Mandarin</option><option value="Arabic">Arabic</option>
-      <option value="Vietnamese">Vietnamese</option><option value="Russian">Russian</option>
-      <option value="Darija">Darija (Moroccan Arabic)</option><option value="Urdu">Urdu</option>
-      <option value="Tagalog">Tagalog</option><option value="French">French</option></select>
-  </div>
+  <div class="lang-selector"><label for="langpick" style="font-size:0.75rem;color:#a89e96;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px">Translate to</label>
+  <select id="langpick" onchange="setLanguage(this.value)">
+      <option value=''>— none —</option>
+      <option value='Spanish'>Spanish</option><option value='Cantonese'>Cantonese</option><option value='Mandarin'>Mandarin</option><option value='Arabic'>Arabic</option><option value='Vietnamese'>Vietnamese</option><option value='Russian'>Russian</option><option value='Darija'>Darija (Moroccan Arabic)</option><option value='Urdu'>Urdu</option><option value='Tagalog'>Tagalog</option><option value='French'>French</option></select></div>
 </header>
 <nav class="top-nav">
   <button class="act-btn active" id="btn-flashcards" onclick="selectActivity('flashcards')">1 — Learn Vocabulary</button>
-  <button class="act-btn" id="btn-quiz"       onclick="selectActivity('quiz')">2 — Picture Quiz</button>
-  <button class="act-btn" id="btn-listen"     onclick="selectActivity('listen')">3 — Listen &amp; See</button>
-  <button class="act-btn" id="btn-fillblank"  onclick="selectActivity('fillblank')">4 — Fill in the Blank</button>
-  <button class="act-btn" id="btn-matching"   onclick="selectActivity('matching')">5 — Picture Match</button>
+  <button class="act-btn" id="btn-quiz" onclick="selectActivity('quiz')">2 — Picture Quiz</button>
+  <button class="act-btn" id="btn-listen" onclick="selectActivity('listen')">3 — Listen &amp; See</button>
+  <button class="act-btn" id="btn-fillblank" onclick="selectActivity('fillblank')">4 — Fill in the Blank</button>
+  <button class="act-btn" id="btn-matching" onclick="selectActivity('matching')">5 — Picture Match</button>
 </nav>
 <main class="main" id="main"></main>
 <script>
@@ -463,7 +424,7 @@ const TIPS = {
   "strokes":       "ways of doing something / swimming movements",
   "folks":         "people",
 }
-const SET = { id:"body", name:"Body Talk", color:"#d4570a", idioms:[
+const SET={ id:"body", name:"Body Talk", color:"#d4570a", idioms:[
     {idiom:"All Thumbs", meaning:"clumsy (awkward with your hands, accident-prone)", example:"I broke two glasses today — I'm all thumbs in the kitchen."},
     {idiom:"Get in Someone's Hair", meaning:"bother someone (annoy or get in the way of someone)", example:"Stop getting in my hair while I'm trying to work!"},
     {idiom:"Shoot Off One's Mouth", meaning:"express one's opinions loudly (talk too much or say things without thinking)", example:"He was shooting off his mouth about politics again."},
@@ -475,7 +436,7 @@ const SET = { id:"body", name:"Body Talk", color:"#d4570a", idioms:[
     {idiom:"Dressed to the Teeth", meaning:"dressed elegantly (wearing very fancy, stylish clothing)", example:"She arrived at the party dressed to the teeth."},
     {idiom:"Toot One's Own Horn", meaning:"boast (brag about yourself or your own accomplishments)", example:"I hate to toot my own horn, but I got the highest score."},
   ]};
-const FITB = { 'body': [
+const FITB={"body":[
     {s: "I dropped my phone again — I'm really ___.",                         a: "all thumbs"},
     {s: "My little brother kept ___ while I was trying to study.",             a: "getting in my hair"},
     {s: "He was always ___ about his opinions at dinner.",                     a: "shooting off his mouth"},
@@ -486,9 +447,9 @@ const FITB = { 'body': [
     {s: "I took too much food — my eyes were ___ my stomach.",                 a: "bigger than"},
     {s: "She arrived at the gala totally ___.",                                a: "dressed to the teeth"},
     {s: "He was always ___ about his test scores.",                            a: "tooting his own horn"},
-  ] };
-let currentSet=SET, currentActivity='flashcards', currentLang='';
-let fcState={idx:0}, quizState={idx:0,score:0}, fitbState={idx:0,score:0}, listenState={idx:0,score:0};
+  ]};
+let currentSet=SET,currentActivity="flashcards",currentLang="";
+let fcState={idx:0},quizState={idx:0,score:0},fitbState={idx:0,score:0},listenState={idx:0,score:0};
 let mastery={};
 
 async function saveAnswer(activity, idiom, chosen, correct, isCorrect) {
@@ -687,10 +648,13 @@ function renderFlashcards(idioms){
     +'<p>All '+idioms.length+' idioms in this lesson. Scroll to review.</p></div>'
     +'<div class="vocab-scroll-grid">'+cardsHtml+'</div>';
 
-  // Load translations for all cards
-  idioms.forEach(function(item){
-    loadTrans(item.idiom, item.meaning, 'trans-fc-'+item.idiom.replace(/ /g,'_'));
-  });
+  // Load translations sequentially to avoid rate limit
+  (async function(){
+    for (var i = 0; i < idioms.length; i++) {
+      await loadTrans(idioms[i].idiom, idioms[i].meaning, 'trans-fc-'+idioms[i].idiom.replace(/ /g,'_'));
+      await new Promise(function(r){ setTimeout(r, 300); });
+    }
+  })();
 }
 
 
@@ -937,26 +901,24 @@ function renderMatching(idioms){
 
 function selectActivity(id){
   currentActivity=id;
-  document.querySelectorAll('.act-btn').forEach(function(b){b.classList.remove('active');});
-  const btn=document.getElementById('btn-'+id); if(btn) btn.classList.add('active');
-  resetState(); renderActivity();
+  document.querySelectorAll(".act-btn").forEach(function(b){b.classList.remove("active");});
+  const btn=document.getElementById("btn-"+id);if(btn)btn.classList.add("active");
+  resetState();renderActivity();
 }
 function renderActivity(){
   const idioms=currentSet.idioms;
   switch(currentActivity){
-    case 'flashcards': renderFlashcards(idioms); break;
-    case 'quiz':       renderQuiz(idioms); break;
-    case 'listen':     renderListen(idioms); break;
-    case 'fillblank':  renderFillBlank(idioms); break;
-    case 'matching':   renderMatching(idioms); break;
-    default: renderFlashcards(idioms);
+    case "flashcards":renderFlashcards(idioms);break;
+    case "quiz":renderQuiz(idioms);break;
+    case "listen":renderListen(idioms);break;
+    case "fillblank":renderFillBlank(idioms);break;
+    case "matching":renderMatching(idioms);break;
+    default:renderFlashcards(idioms);
   }
 }
 (function(){
-  const lang=sessionStorage.getItem('idiom_lang')||'';
-  if(lang){currentLang=lang; const sel=document.getElementById('langpick'); if(sel) sel.value=lang;}
+  const lang=sessionStorage.getItem("idiom_lang")||"";
+  if(lang){currentLang=lang;const sel=document.getElementById("langpick");if(sel)sel.value=lang;}
   renderActivity();
 })();
-</script>
-</body>
-</html>
+</script></body></html>
